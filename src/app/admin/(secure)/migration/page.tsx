@@ -14,8 +14,8 @@ export default async function MigrationPage() {
         const programs = await ProgramModel.find({});
 
         // Check for programs with legacy sections or missing types
-        const legacySingle = programs.filter(p => p.section === "single").length;
-        const legacyGroup = programs.filter(p => p.section === "group").length;
+        const legacySingle = programs.filter(p => (p.section as string) === "single").length;
+        const legacyGroup = programs.filter(p => (p.section as string) === "group").length;
         const missingType = programs.filter(p => !p.type).length;
 
         return {
@@ -27,15 +27,14 @@ export default async function MigrationPage() {
         };
     }
 
-    async function runMigration() {
+    async function runMigration(_formData: FormData) {
         "use server";
         await connectDB();
         const programs = await ProgramModel.find({});
-        let updatedCount = 0;
 
         for (const p of programs) {
             let type = p.type;
-            let section = p.section;
+            let section = p.section as string;
             let needsUpdate = false;
 
             // Rule 1: Legacy "Single" section -> Section "Senior", Type "Single"
@@ -53,31 +52,19 @@ export default async function MigrationPage() {
 
             // Rule 3: Ensure Type is set (Default to Single if missing)
             if (!type) {
-                // Determine if it looks like a group item?
-                // Heuristic: If candidateLimit > 1, assume Group, else Single.
-                // Note: candidateLimit is usually 1 for Single (1 student per team entry)
-                // For Group items, it's usually 1 (1 group per team) OR > 1 (multiple students). 
-                // But strict data definition says "Single" events have 1 participant. "Group" have > 1?
-                // Let's stick to a safe default: "single" if ambiguous, unless section implies group (which we handled).
-                // If section is "general", it could be either. Defaulting to single.
+                // Default to single
                 type = "single";
                 needsUpdate = true;
             }
 
             if (needsUpdate) {
-                // Direct MongoDB update to bypass strict schema validation if needed, 
-                // but .save() is better to ensure schema compliance.
-                // We cast to "any" to set possibly restricted fields if schema types aren't synced in runtime yet?
-                // No, assuming codebase is updated.
-                p.section = section;
+                p.section = section as any;
                 p.type = type;
                 await p.save();
-                updatedCount++;
             }
         }
 
         revalidatePath("/admin/migration");
-        return { count: updatedCount };
     }
 
     const stats = await getMigrationStats();

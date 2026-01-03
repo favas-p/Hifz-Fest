@@ -124,7 +124,6 @@ export async function upsertPortalStudent(input: {
         $set: {
           name: input.name,
           chest_no: chestNumber,
-          chest_no: chestNumber,
           team_id: input.teamId,
           category: input.category,
         },

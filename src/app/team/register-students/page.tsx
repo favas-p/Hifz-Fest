@@ -233,8 +233,8 @@ export default async function RegisterStudentsPage({
                 required
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
               />
-              <select name="category" required className="w-[180px] bg-white/10 border-white/20 text-white rounded-md px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                <option value="" disabled selected className="bg-slate-900">Select Category</option>
+              <select name="category" defaultValue="" required className="w-[180px] bg-white/10 border-white/20 text-white rounded-md px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <option value="" disabled className="bg-slate-900">Select Category</option>
                 <option value="junior" className="bg-slate-900">Junior</option>
                 <option value="senior" className="bg-slate-900">Senior</option>
               </select>

@@ -393,8 +393,8 @@ export default async function StudentsPage() {
               placeholder="Select team"
             />
             <div className="md:col-span-2">
-              <select name="category" required className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-fuchsia-400 focus:outline-none">
-                <option value="" disabled selected className="bg-slate-900">Select Category</option>
+              <select name="category" defaultValue="" required className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-fuchsia-400 focus:outline-none">
+                <option value="" disabled className="bg-slate-900">Select Category</option>
                 <option value="junior" className="bg-slate-900">Junior</option>
                 <option value="senior" className="bg-slate-900">Senior</option>
               </select>

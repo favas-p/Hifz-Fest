@@ -23,7 +23,8 @@ import { redirectWithToast } from "@/lib/actions";
 const programSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, "Program name is required"),
-  section: z.enum(["single", "group", "general"]),
+  section: z.enum(["junior", "senior", "general", "hifz"]),
+  type: z.enum(["single", "group"]),
   stage: z.enum(["true", "false"]),
 
   candidateLimit: z
@@ -35,7 +36,8 @@ const programSchema = z.object({
 
 const csvRowSchema = z.object({
   name: z.string().min(2, "Program name is required"),
-  section: z.enum(["single", "group", "general"]),
+  section: z.enum(["junior", "senior", "general", "hifz"]),
+  type: z.enum(["single", "group"]),
   stage: z
     .string()
     .transform((value) => value.trim().toLowerCase())
@@ -59,6 +61,7 @@ async function mutateProgram(
   const idValue = formData.get("id");
   const nameValue = formData.get("name");
   const sectionValue = formData.get("section");
+  const typeValue = formData.get("type");
   const stageValue = formData.get("stage");
 
   const candidateLimitValue = formData.get("candidateLimit") ?? formData.get("candidate_limit");
@@ -66,7 +69,8 @@ async function mutateProgram(
   const parsed = programSchema.safeParse({
     id: idValue ? String(idValue) : undefined,
     name: nameValue ? String(nameValue).trim() : "",
-    section: sectionValue ? String(sectionValue) : "single",
+    section: sectionValue ? (String(sectionValue) as any) : undefined,
+    type: typeValue ? (String(typeValue) as any) : undefined,
     stage: stageValue ? String(stageValue) : "true",
 
     candidateLimit: candidateLimitValue ? String(candidateLimitValue) : "1",
@@ -84,6 +88,7 @@ async function mutateProgram(
     await createProgram({
       name: payload.name,
       section: payload.section,
+      type: payload.type,
       stage,
 
       candidateLimit,
@@ -93,6 +98,7 @@ async function mutateProgram(
     await updateProgramById(payload.id, {
       name: payload.name,
       section: payload.section,
+      type: payload.type,
       stage,
 
       candidateLimit,
@@ -314,6 +320,7 @@ async function importProgramsAction(formData: FormData) {
       await createProgram({
         name: parsed.data.name,
         section: parsed.data.section,
+        type: parsed.data.type,
         stage: parsed.data.stage,
 
         candidateLimit: parsed.data.candidate_limit,
@@ -363,14 +370,25 @@ export default async function ProgramsPage() {
             <Input name="name" placeholder="Program name" required />
             <SearchSelect
               name="section"
+              defaultValue="general"
+              required
+              options={[
+                { value: "junior", label: "Junior" },
+                { value: "senior", label: "Senior" },
+                { value: "general", label: "General" },
+                { value: "hifz", label: "Hifz" },
+              ]}
+              placeholder="Select section"
+            />
+            <SearchSelect
+              name="type"
               defaultValue="single"
               required
               options={[
                 { value: "single", label: "Single" },
                 { value: "group", label: "Group" },
-                { value: "general", label: "General" },
               ]}
-              placeholder="Select section"
+              placeholder="Select type"
             />
 
             <SearchSelect
@@ -398,7 +416,7 @@ export default async function ProgramsPage() {
         <Card className="h-full">
           <CardTitle>Bulk Import (CSV)</CardTitle>
           <CardDescription className="mt-2">
-            Required columns: <code>name, section, stage, candidate_limit</code>
+            Required columns: <code>name, section, type, stage, candidate_limit</code>
           </CardDescription>
           <form
             action={importProgramsAction}
