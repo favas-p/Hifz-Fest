@@ -89,9 +89,12 @@ async function updateScheduleAction(formData: FormData) {
       redirectWithToast("/admin/team-portal-control", "Start and end date/time are required.", "error");
       return;
     }
+    // Convert Input (IST) -> UTC for storage
+    // Input format: "YYYY-MM-DDTHH:mm"
+    // We treat this as IST (+05:30)
     await updateRegistrationSchedule({
-      startDateTime: new Date(start).toISOString(),
-      endDateTime: new Date(end).toISOString(),
+      startDateTime: new Date(`${start}+05:30`).toISOString(),
+      endDateTime: new Date(`${end}+05:30`).toISOString(),
     });
     revalidatePath("/admin/team-portal-control");
     redirectWithToast("/admin/team-portal-control", "Registration schedule updated successfully!", "success");
@@ -112,6 +115,18 @@ export default async function TeamPortalControlPage() {
     getProgramRegistrations(),
     getRegistrationSchedule(),
   ]);
+
+  // Helper to convert UTC -> IST String (YYYY-MM-DDTHH:mm) for datetime-local
+  const toISTString = (utcString: string) => {
+    if (!utcString) return "";
+    const date = new Date(utcString);
+    // Add 5.5 hours (IST Offset)
+    const istDate = new Date(date.getTime() + 5.5 * 60 * 60 * 1000);
+    return istDate.toISOString().slice(0, 16);
+  };
+
+  const startDefault = toISTString(schedule.startDateTime);
+  const endDefault = toISTString(schedule.endDateTime);
 
   return (
     <div className="space-y-10">
@@ -152,7 +167,7 @@ export default async function TeamPortalControlPage() {
                 type="datetime-local"
                 name="startDateTime"
                 className="mt-2"
-                defaultValue={schedule.startDateTime.slice(0, 16)}
+                defaultValue={startDefault}
                 required
               />
             </label>
@@ -162,7 +177,7 @@ export default async function TeamPortalControlPage() {
                 type="datetime-local"
                 name="endDateTime"
                 className="mt-2"
-                defaultValue={schedule.endDateTime.slice(0, 16)}
+                defaultValue={endDefault}
                 required
               />
             </label>

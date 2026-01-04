@@ -235,7 +235,7 @@ export async function removeRegistrationsByProgram(programId: string) {
 
 export async function getRegistrationSchedule(): Promise<RegistrationSchedule> {
   await connectDB();
-  const doc = await RegistrationScheduleModel.findOne().lean();
+  const doc = await RegistrationScheduleModel.findOne({ key: "global" }).lean();
   if (doc) {
     return { startDateTime: doc.startDateTime, endDateTime: doc.endDateTime };
   }
