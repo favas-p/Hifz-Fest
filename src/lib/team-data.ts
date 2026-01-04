@@ -96,7 +96,8 @@ export async function getPortalStudents(): Promise<PortalStudent[]> {
     teamId: student.team_id,
     teamName: teamMap.get(student.team_id) ?? "Unknown",
     score: student.total_points ?? 0,
-    category: student.category,
+    badge_uid: student.badge_uid,
+    category: student.category as "junior" | "senior" | undefined,
   }));
 }
 
@@ -105,6 +106,7 @@ export async function upsertPortalStudent(input: {
   name: string;
   chestNumber: string;
   teamId: string;
+  badge_uid?: string;
   category: "junior" | "senior";
 }) {
   await connectDB();
@@ -119,21 +121,41 @@ export async function upsertPortalStudent(input: {
     throw new Error(`Chest number "${input.chestNumber}" is already registered to student "${duplicate.name}".`);
   }
 
+  // Check for duplicate badge_uid if provided
+  if (input.badge_uid) {
+    const badgeDuplicate = await StudentModel.findOne({
+      badge_uid: input.badge_uid,
+      ...(input.id ? { id: { $ne: input.id } } : {}),
+    }).lean().exec();
+
+    if (badgeDuplicate) {
+      throw new Error(`Badge UID "${input.badge_uid}" is already assigned to student "${badgeDuplicate.name}".`);
+    }
+  }
+
   const studentId = input.id ?? randomUUID();
   const isNew = !input.id;
+
+  const updateOperation: any = {
+    $set: {
+      name: input.name,
+      chest_no: chestNumber,
+      team_id: input.teamId,
+      category: input.category,
+    },
+    $setOnInsert: { total_points: 0 },
+  };
+
+  if (input.badge_uid) {
+    updateOperation.$set.badge_uid = input.badge_uid;
+  } else {
+    updateOperation.$unset = { badge_uid: "" };
+  }
 
   try {
     await StudentModel.updateOne(
       { id: studentId },
-      {
-        $set: {
-          name: input.name,
-          chest_no: chestNumber,
-          team_id: input.teamId,
-          category: input.category,
-        },
-        $setOnInsert: { total_points: 0 },
-      },
+      updateOperation,
       { upsert: true },
     );
 
@@ -280,17 +302,34 @@ export function validateParticipationLimit(
   allPrograms: Program[],
   registrations: ProgramRegistration[],
 ): { allowed: boolean; reason?: string; currentCount?: number; maxCount?: number } {
-  // Determine program type
-  // Hifz programs are exempt from limits
-  if (program.section === "hifz" || program.name.toLowerCase().includes("hifz")) {
-    return { allowed: true };
-  }
-
   // Get all registrations for this student
   const studentRegistrations = registrations.filter((reg) => reg.studentId === studentId);
 
   // Create a map of programId -> Program for quick lookup
   const programMap = new Map(allPrograms.map((p) => [p.id, p]));
+
+  // Determine program type
+  // Hifz programs are exempt from general limits but have a strict 1-program limit
+  const isTargetHifz =
+    program.section === "hifz" || program.name.toLowerCase().includes("hifz");
+
+  if (isTargetHifz) {
+    const existingHifz = studentRegistrations.find((reg) => {
+      const regProgram = programMap.get(reg.programId);
+      return (
+        regProgram &&
+        (regProgram.section === "hifz" || regProgram.name.toLowerCase().includes("hifz"))
+      );
+    });
+
+    if (existingHifz) {
+      return {
+        allowed: false,
+        reason: `Already registered for Hifz program: ${existingHifz.programName}`,
+      };
+    }
+    return { allowed: true };
+  }
 
   // Calculate counts EXCLUDING Hifz programs
   let totalNonHifzCount = 0;

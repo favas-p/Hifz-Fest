@@ -78,7 +78,8 @@ const StudentSchema = new Schema<Student>(
     avatar: { type: String },
     total_points: { type: Number, default: 0 },
     phone_number: { type: String },
-    category: { type: String, enum: ["junior", "senior"] },
+    badge_uid: { type: String, unique: true, sparse: true },
+    category: { type: String, enum: ["junior", "senior"], default: "junior" },
   },
   { timestamps: true },
 );

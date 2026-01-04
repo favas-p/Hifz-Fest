@@ -30,6 +30,7 @@ export interface Student {
   avatar?: string;
   total_points: number;
   phone_number?: string; // Added for Festory verification
+  badge_uid?: string;
   category?: "junior" | "senior";
 }
 
@@ -113,6 +114,7 @@ export interface PortalStudent {
   teamId: string;
   teamName: string;
   score: number;
+  badge_uid?: string;
   category?: "junior" | "senior";
 }
 

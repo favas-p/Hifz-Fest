@@ -255,14 +255,33 @@ export async function createStudent(input: Omit<Student, "id" | "total_points">)
     throw new Error(`Chest number "${input.chest_no}" is already registered to student "${existing.name}".`);
   }
 
+  // Check for duplicate badge_uid if provided
+  if (input.badge_uid) {
+    const badgeDuplicate = await StudentModel.findOne({
+      badge_uid: input.badge_uid
+    }).lean();
+
+    if (badgeDuplicate) {
+      throw new Error(`Badge UID "${input.badge_uid}" is already assigned to student "${badgeDuplicate.name}".`);
+    }
+  }
+
   try {
     const studentId = randomUUID();
-    await StudentModel.create({
+    const studentData: any = {
       ...input,
       chest_no: normalizedChestNo,
       id: studentId,
       total_points: 0,
-    });
+    };
+
+    if (input.badge_uid) {
+      studentData.badge_uid = input.badge_uid;
+    } else {
+      delete studentData.badge_uid;
+    }
+
+    await StudentModel.create(studentData);
 
     // Emit real-time event
     const { emitStudentCreated } = await import("./pusher");
@@ -296,6 +315,18 @@ export async function updateStudentById(
       throw new Error(`Chest number "${data.chest_no}" is already registered to student "${existing.name}".`);
     }
 
+    // If badge_uid is being updated, check for duplicates
+    if (data.badge_uid) {
+      const existingBadge = await StudentModel.findOne({
+        badge_uid: data.badge_uid,
+        id: { $ne: id }
+      }).lean();
+
+      if (existingBadge) {
+        throw new Error(`Badge UID "${data.badge_uid}" is already assigned to student "${existingBadge.name}".`);
+      }
+    }
+
     // Normalize the chest number in the update data
     data.chest_no = normalizedChestNo;
   }
@@ -305,7 +336,22 @@ export async function updateStudentById(
     const student = await StudentModel.findOne({ id }).lean();
     const teamId = student?.team_id || data.team_id || "";
 
-    await StudentModel.updateOne({ id }, data);
+    const updateOperation: any = { $set: { ...data } };
+
+    // Handle badge_uid unsetting
+    // If badge_uid is explicitly passed as empty string, unset it.
+    // If it is passed as a valid string, it is already in $set.
+    // If it is undefined, it is not in data (Partial), so nothing happens (which is correct for partial update).
+    // BUT we need to establish convention: Empty string "" means remove.
+    if ('badge_uid' in data) {
+      if (!data.badge_uid) {
+        // If empty string or null/false, unset it
+        delete updateOperation.$set.badge_uid;
+        updateOperation.$unset = { badge_uid: "" };
+      }
+    }
+
+    await StudentModel.updateOne({ id }, updateOperation);
 
     // Emit real-time event
     if (teamId) {
@@ -551,17 +597,17 @@ const defaultTeams: Team[] = [
 ];
 
 const defaultStudents: Student[] = [
-  
+
 ];
 
 const defaultPrograms: Program[] = [
-  
+
 ];
 
 const defaultAssignments: AssignedProgram[] = [
-  
+
 ];
 
 const defaultJury: Jury[] = [
- 
+
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ProgramsGrid } from "@/components/programs-grid";
 import { SectionResults } from "@/components/section-results";
 import { StudentLeaderboard } from "@/components/student-leaderboard";
@@ -36,6 +36,34 @@ export function ResultsRealtime({
   useResultUpdates(() => {
     router.refresh();
   });
+
+  // Calculate students for leaderboard excluding Hifz points
+  const leaderboardStudents = useMemo(() => {
+    // 1. Calculate points from Hifz programs for each student
+    const hifzPoints = new Map<string, number>();
+
+    initialResults.forEach((result) => {
+      const program = initialProgramMap.get(result.program_id);
+      if (!program) return;
+
+      const isHifz = program.section === "hifz" || program.name.toLowerCase().includes("hifz");
+
+      if (isHifz) {
+        result.entries.forEach((entry) => {
+          if (entry.student_id && entry.score) {
+            const current = hifzPoints.get(entry.student_id) || 0;
+            hifzPoints.set(entry.student_id, current + entry.score);
+          }
+        });
+      }
+    });
+
+    // 2. Return students with adjusted scores
+    return students.map((s) => ({
+      ...s,
+      total_points: Math.max(0, s.total_points - (hifzPoints.get(s.id) || 0)),
+    }));
+  }, [students, initialResults, initialProgramMap]);
 
   return (
     <div className="min-h-screen bg-[#fffcf5]">
@@ -111,7 +139,7 @@ export function ResultsRealtime({
               <p className="text-gray-600">Top performers across all events</p>
             </motion.div>
             <StudentLeaderboard
-              students={students}
+              students={leaderboardStudents}
               teams={teams}
             />
           </div>

@@ -475,6 +475,7 @@ export const StudentManager = React.memo(function StudentManager({
                   <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70">
                     Chest: {student.chest_no}
                   </div>
+                  <Input name="badge_uid" defaultValue={student.badge_uid || ""} placeholder="Badge UID" />
                   <SearchSelect
                     name="team_id"
                     defaultValue={student.team_id}
@@ -576,6 +577,9 @@ export const StudentManager = React.memo(function StudentManager({
             </p>
             <p>
               <span className="text-white/50">Category:</span> <span className="capitalize">{viewStudent.category}</span>
+            </p>
+            <p>
+              <span className="text-white/50">Badge UID:</span> <span className="font-mono">{viewStudent.badge_uid || "Not Assigned"}</span>
             </p>
           </div>
         )}

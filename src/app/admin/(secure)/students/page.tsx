@@ -46,6 +46,7 @@ const studentSchema = z.object({
   team_id: z.string().min(2),
   chest_no: z.string().optional(),
   category: z.enum(["junior", "senior"]),
+  badge_uid: z.string().optional(),
 });
 
 const csvStudentSchema = z.object({
@@ -54,6 +55,7 @@ const csvStudentSchema = z.object({
   team_name: z.string().min(2).optional(),
   chest_no: z.string().optional(),
   category: z.enum(["junior", "senior"]).optional(),
+  badge_uid: z.string().optional(),
 }).refine((data) => data.team_id || data.team_name, {
   message: "Either team_id or team_name is required",
   path: ["team_id"],
@@ -66,6 +68,7 @@ async function upsertStudent(formData: FormData, mode: "create" | "update") {
     team_id: String(formData.get("team_id") ?? "").trim(),
     chest_no: String(formData.get("chest_no") ?? "").trim() || undefined,
     category: String(formData.get("category") ?? "").trim(),
+    badge_uid: String(formData.get("badge_uid") ?? "").trim() || undefined,
   });
   if (!parsed.success) {
     throw new Error(parsed.error.issues.map((issue) => issue.message).join(", "));
@@ -96,6 +99,7 @@ async function upsertStudent(formData: FormData, mode: "create" | "update") {
       team_id: payload.team_id,
       chest_no: chest_no!,
       category: payload.category,
+      badge_uid: payload.badge_uid,
     });
   } else {
     if (!payload.id) throw new Error("Student ID missing");
@@ -104,6 +108,7 @@ async function upsertStudent(formData: FormData, mode: "create" | "update") {
       team_id: payload.team_id,
       chest_no: chest_no!,
       category: payload.category,
+      badge_uid: payload.badge_uid,
     });
   }
 
@@ -210,6 +215,8 @@ function parseStudentCsv(content: string) {
   if (hasCategory) requiredHeaders.push("category");
   const hasChestNo = headers.includes("chest_no");
   if (hasChestNo) requiredHeaders.push("chest_no");
+  const hasBadgeUid = headers.includes("badge_uid");
+  if (hasBadgeUid) requiredHeaders.push("badge_uid");
 
   for (const column of requiredHeaders) {
     if (!headers.includes(column)) {
@@ -331,6 +338,7 @@ async function importStudentsAction(formData: FormData) {
           team_id: resolvedTeamId,
           chest_no,
           category: parsed.data.category || (parsed.data.name.toLowerCase().includes("junior") ? "junior" : "senior"), // Fallback logic or default
+          badge_uid: parsed.data.badge_uid || undefined,
         });
 
         // Add to existing set to prevent duplicates in subsequent rows of the same import
@@ -385,6 +393,7 @@ export default async function StudentsPage() {
             className="mt-6 grid gap-4 md:grid-cols-2"
           >
             <Input name="name" placeholder="Student name" required />
+            <Input name="badge_uid" placeholder="Badge UID (optional)" />
             <SearchSelect
               name="team_id"
               defaultValue={teams[0]?.id}
@@ -410,7 +419,7 @@ export default async function StudentsPage() {
         <Card className="h-full">
           <CardTitle>Bulk Import Students (CSV)</CardTitle>
           <CardDescription className="mt-2">
-            Required: <code>name</code>, <code>team_id/name</code>. Optional: <code>category</code> (junior/senior), <code>chest_no</code>.
+            Required: <code>name</code>, <code>team_id/name</code>. Optional: <code>category</code> (junior/senior), <code>chest_no</code>, <code>badge_uid</code>.
             <br />
             <span className="text-xs text-white/50">
               Chest numbers will be auto-generated. Team names: SAMARQAND, NAHAVAND, YAMAMA, QURTUBA, MUQADDAS, BUKHARA

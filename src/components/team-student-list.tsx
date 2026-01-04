@@ -30,6 +30,7 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
   const [editName, setEditName] = useState("");
   const [editChestNumber, setEditChestNumber] = useState("");
   const [editCategory, setEditCategory] = useState<"junior" | "senior" | "">("");
+  const [editBadgeUid, setEditBadgeUid] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter students based on search query
@@ -43,7 +44,8 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
       const nameMatch = student.name.toLowerCase().includes(query);
       const chestMatch = student.chestNumber.toLowerCase().includes(query);
       const teamMatch = student.teamName.toLowerCase().includes(query);
-      return nameMatch || chestMatch || teamMatch;
+      const badgeMatch = (student.badge_uid || "").toLowerCase().includes(query);
+      return nameMatch || chestMatch || teamMatch || badgeMatch;
     });
   }, [students, searchQuery]);
 
@@ -51,6 +53,7 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
     setEditingId(student.id);
     setEditName(student.name);
     setEditChestNumber(student.chestNumber);
+    setEditBadgeUid(student.badge_uid || "");
     setEditCategory(student.category || "");
   };
 
@@ -58,6 +61,7 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
     setEditingId(null);
     setEditName("");
     setEditChestNumber("");
+    setEditBadgeUid("");
     setEditCategory("");
   };
 
@@ -66,11 +70,13 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
     formData.append("studentId", studentId);
     formData.append("name", editName.trim());
     formData.append("chestNumber", editChestNumber.trim().toUpperCase());
+    formData.append("badge_uid", editBadgeUid.trim());
     if (editCategory) formData.append("category", editCategory);
     await updateAction(formData);
     setEditingId(null);
     setEditName("");
     setEditChestNumber("");
+    setEditBadgeUid("");
     setEditCategory("");
   };
 
@@ -189,13 +195,21 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-white/60 mb-1.5 block">Chest Number</label>
                         <Input
                           value={editChestNumber}
                           onChange={(e) => setEditChestNumber(e.target.value.toUpperCase())}
                           placeholder="Chest number"
                           className="bg-white/10 border-white/20 text-white"
                           maxLength={10}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-white/60 mb-1.5 block">Badge UID</label>
+                        <Input
+                          value={editBadgeUid}
+                          onChange={(e) => setEditBadgeUid(e.target.value)}
+                          placeholder="RFID/Badge UID"
+                          className="bg-white/10 border-white/20 text-white"
                         />
                       </div>
                     </div>
@@ -300,6 +314,10 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
                       <div>
                         <p className="text-xs text-white/60 mb-1">Category</p>
                         <p className="font-medium text-white capitalize">{student.category || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-white/60 mb-1">Badge UID</p>
+                        <p className="font-mono font-medium text-white">{student.badge_uid || 'Not Assigned'}</p>
                       </div>
                     </div>
                     <Button

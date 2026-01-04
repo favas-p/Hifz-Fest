@@ -13,11 +13,17 @@ interface StudentLeaderboardProps {
 
 export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps) {
     const [search, setSearch] = useState("");
+    const [activeCategory, setActiveCategory] = useState<"junior" | "senior" | "general">("general");
 
     const teamMap = useMemo(() => new Map(teams.map((t) => [t.id, t])), [teams]);
 
+    const categoryStudents = useMemo(() => {
+        if (activeCategory === "general") return students;
+        return students.filter(s => (s.category || "junior") === activeCategory);
+    }, [students, activeCategory]);
+
     const sortedStudents = useMemo(() => {
-        const sorted = [...students]
+        const sorted = [...categoryStudents]
             .filter((s) => s.total_points > 0)
             .sort((a, b) => b.total_points - a.total_points);
 
@@ -33,7 +39,7 @@ export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps)
                 teamColor: teamMap.get(student.team_id)?.color || "#808080",
             };
         });
-    }, [students, teamMap]);
+    }, [categoryStudents, teamMap]);
 
     const filteredStudents = useMemo(() => {
         if (!search.trim()) return sortedStudents;
@@ -51,7 +57,8 @@ export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps)
 
     // Helper to determine podium label
     const getPodiumLabel = (rank: number) => {
-        if (rank === 1) return "CHAMPION";
+        const categoryLabel = activeCategory === "general" ? "" : ` (${activeCategory.toUpperCase()})`;
+        if (rank === 1) return `CHAMPION${categoryLabel}`;
         if (rank === 2) return "2ND PLACE";
         if (rank === 3) return "3RD PLACE";
         return `${rank}TH PLACE`;
@@ -108,6 +115,39 @@ export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps)
 
     return (
         <div className="space-y-8 md:space-y-12 pt-4 md:pt-8 w-full">
+            {/* Category Tabs */}
+            <div className="flex justify-center px-4">
+                <div className="bg-white/50 backdrop-blur-md p-1 rounded-2xl border border-gray-200/50 flex gap-1">
+                    <button
+                        onClick={() => setActiveCategory("general")}
+                        className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeCategory === "general"
+                                ? "bg-white text-[#8B4513] shadow-sm ring-1 ring-gray-200"
+                                : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
+                            }`}
+                    >
+                        GENERAL
+                    </button>
+                    <button
+                        onClick={() => setActiveCategory("junior")}
+                        className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeCategory === "junior"
+                            ? "bg-white text-[#8B4513] shadow-sm ring-1 ring-gray-200"
+                            : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
+                            }`}
+                    >
+                        JUNIOR
+                    </button>
+                    <button
+                        onClick={() => setActiveCategory("senior")}
+                        className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeCategory === "senior"
+                            ? "bg-white text-[#8B4513] shadow-sm ring-1 ring-gray-200"
+                            : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
+                            }`}
+                    >
+                        SENIOR
+                    </button>
+                </div>
+            </div>
+
             {/* Search Bar - Floating & Elegant */}
             <div className="relative max-w-lg mx-auto px-4 z-10">
                 <div className="relative group">
@@ -116,7 +156,7 @@ export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps)
                     </div>
                     <input
                         type="text"
-                        placeholder="Search student, chest no..."
+                        placeholder={`Search ${activeCategory} student, chest no...`}
                         className="block w-full pl-11 pr-4 py-3.5 bg-white/80 backdrop-blur-md border border-gray-200/50 rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition-all"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}

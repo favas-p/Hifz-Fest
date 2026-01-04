@@ -55,6 +55,7 @@ async function createStudentAction(formData: FormData) {
 
   const name = String(formData.get("name") ?? "").trim();
   const category = String(formData.get("category") ?? "") as "junior" | "senior";
+  const badge_uid = String(formData.get("badge_uid") ?? "").trim();
 
   if (!name) {
     redirectWithMessage("Student name is required.");
@@ -77,12 +78,18 @@ async function createStudentAction(formData: FormData) {
   ) {
     redirectWithMessage("Student name already exists for this team.");
   }
+  // Check duplicate UID on client side for immediate feedback? 
+  // We do it in server action properly via upsertPortalStudent which checks DB. 
+  // We can also check local list but it might not be complete or up to date with other teams if UID is global (it should be).
+  // Actually unique is global.
+
   try {
     await upsertPortalStudent({
       name,
       chestNumber,
       teamId: team.id,
       category,
+      badge_uid: badge_uid || undefined,
     });
   } catch (error) {
     redirectWithMessage((error as Error).message);
@@ -105,6 +112,7 @@ async function updateStudentAction(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const category = String(formData.get("category") ?? "") as "junior" | "senior";
   const chestNumber = String(formData.get("chestNumber") ?? "").trim().toUpperCase();
+  const badge_uid = String(formData.get("badge_uid") ?? "").trim();
 
   if (!studentId) redirectWithMessage("Missing student ID.");
   if (!name) redirectWithMessage("Student name is required.");
@@ -127,6 +135,7 @@ async function updateStudentAction(formData: FormData) {
       chestNumber,
       teamId: team.id,
       category,
+      badge_uid: badge_uid || undefined,
     });
   } catch (error) {
     redirectWithMessage((error as Error).message);
@@ -226,12 +235,17 @@ export default async function RegisterStudentsPage({
         {isOpen ? (
           <>
             <ChestNumberPreview teamName={team.teamName} teamStudents={teamStudents} />
-            <form action={createStudentAction} className="mt-4 grid gap-3 sm:gap-4 sm:grid-cols-[1fr_auto]">
+            <form action={createStudentAction} className="mt-4 grid gap-3 sm:gap-4 sm:grid-cols-[1fr_auto_auto_auto]">
               <Input
                 name="name"
                 placeholder="Enter student name"
                 required
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+              />
+              <Input
+                name="badge_uid"
+                placeholder="RFID/Badge UID (Optional)"
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 w-full sm:w-[200px]"
               />
               <select name="category" defaultValue="" required className="w-[180px] bg-white/10 border-white/20 text-white rounded-2xl px-4 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                 <option value="" disabled className="bg-slate-900">Select Category</option>
