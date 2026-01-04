@@ -282,7 +282,7 @@ export function validateParticipationLimit(
 ): { allowed: boolean; reason?: string; currentCount?: number; maxCount?: number } {
   // Determine program type
   // Hifz programs are exempt from limits
-  if (program.section === "hifz") {
+  if (program.section === "hifz" || program.name.toLowerCase().includes("hifz")) {
     return { allowed: true };
   }
 
@@ -292,48 +292,59 @@ export function validateParticipationLimit(
   // Create a map of programId -> Program for quick lookup
   const programMap = new Map(allPrograms.map((p) => [p.id, p]));
 
-  if (program.stage) {
-    // Stage Items Limit: 4
-    // Filter for existing non-Hifz stage items
-    const stageRegistrations = studentRegistrations.filter((reg) => {
-      const regProgram = programMap.get(reg.programId);
-      if (!regProgram) return false;
-      return regProgram.stage === true && regProgram.section !== "hifz" && reg.programId !== program.id;
-    });
+  // Calculate counts EXCLUDING Hifz programs
+  let totalNonHifzCount = 0;
+  let stageNonHifzCount = 0;
 
-    const maxCount = 4;
-    const currentCount = stageRegistrations.length;
+  for (const reg of studentRegistrations) {
+    const regProgram = programMap.get(reg.programId);
+    if (!regProgram) continue;
 
-    if (currentCount >= maxCount) {
+    const isRegHifz = regProgram.section === "hifz" || regProgram.name.toLowerCase().includes("hifz");
+    if (isRegHifz) continue; // Skip Hifz registrations for counting
+
+    if (reg.programId !== program.id) {
+      totalNonHifzCount++;
+      // Count towards Stage limit ONLY if it's NOT a General program
+      // General programs (section='general') do NOT count towards the "Max 4 Stage Items" limit,
+      // even if they are techincally "on stage".
+      if (regProgram.stage && regProgram.section !== "general") {
+        stageNonHifzCount++;
+      }
+    }
+  }
+
+  // Check Total Limit (Max 6)
+  // If adding this program would exceed 6.
+  // Current program is NON-HIFZ (checked at start).
+  if (totalNonHifzCount >= 6) {
+    return {
+      allowed: false,
+      reason: `Maximum limit of 6 non-Hifz items reached.`,
+      currentCount: totalNonHifzCount,
+      maxCount: 6,
+    };
+  }
+
+  // Check Stage Limit (Max 4)
+  // Only if current program is STAGE AND NOT GENERAL.
+  // General programs are exempt from the Stage Limit check.
+  if (program.stage && program.section !== "general") {
+    if (stageNonHifzCount >= 4) {
       return {
         allowed: false,
-        reason: `Maximum limit of ${maxCount} stage items reached (excluding Hifz).`,
-        currentCount,
-        maxCount,
+        reason: `Maximum limit of 4 stage items reached.`,
+        currentCount: stageNonHifzCount,
+        maxCount: 4,
       };
     }
-    return { allowed: true, currentCount, maxCount };
+  }
+
+  // Allowed
+  if (program.stage && program.section !== "general") {
+    return { allowed: true, currentCount: stageNonHifzCount, maxCount: 4 };
   } else {
-    // Off-Stage (General) Items Limit: 6
-    // Filter for existing non-Hifz off-stage items
-    const offStageRegistrations = studentRegistrations.filter((reg) => {
-      const regProgram = programMap.get(reg.programId);
-      if (!regProgram) return false;
-      return regProgram.stage === false && regProgram.section !== "hifz" && reg.programId !== program.id;
-    });
-
-    const maxCount = 6;
-    const currentCount = offStageRegistrations.length;
-
-    if (currentCount >= maxCount) {
-      return {
-        allowed: false,
-        reason: `Maximum limit of ${maxCount} off-stage items reached (excluding Hifz).`,
-        currentCount,
-        maxCount,
-      };
-    }
-    return { allowed: true, currentCount, maxCount };
+    return { allowed: true, currentCount: totalNonHifzCount, maxCount: 6 };
   }
 }
 
