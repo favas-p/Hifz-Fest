@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import {
-  calculateScore,
   updateAssignmentStatus,
   updateLiveScore,
   updateStudentScore,
 } from "./data";
+import { calculateScore } from "./scoring";
 import { connectDB } from "./db";
 import {
   ApprovedResultModel,

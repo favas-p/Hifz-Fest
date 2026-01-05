@@ -29,6 +29,7 @@ const adminNav: SidebarItem[] = [
       { href: "/admin/request-approvals", label: "Request Approvals" },
     ],
   },
+  { href: "/admin/point-calculator", label: "Point PC", icon: "calculator" },
   { href: "/admin/settings", label: "Settings", icon: "settings" },
 ];
 

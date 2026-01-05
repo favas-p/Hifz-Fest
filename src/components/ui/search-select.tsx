@@ -96,7 +96,7 @@ export function SearchSelect({
     }
 
     document.addEventListener("keydown", handleKey);
-    
+
     // Prevent body scroll when popup is open
     document.body.style.overflow = "hidden";
 
@@ -142,7 +142,7 @@ export function SearchSelect({
           setQuery("");
         }}
       />
-      
+
       {/* Popup Content */}
       <div className="relative z-[100000] w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/95 p-6 shadow-2xl backdrop-blur-2xl">
         {/* Header */}
@@ -163,7 +163,7 @@ export function SearchSelect({
 
         {/* Search Input */}
         <div className="mb-4 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3">
-          <Search className="h-4 w-4 text-white/40 flex-shrink-0" />
+          <Search className="h-4 w-4 text-white/40 shrink-0" />
           <input
             ref={searchInputRef}
             type="text"

@@ -516,37 +516,8 @@ export async function deleteAssignment(programId: string, juryId: string) {
 
 
 
-const GRADE_BONUS: Record<Exclude<GradeType, "none">, number> = {
-  A: 5,
-  B: 3,
-  C: 1,
-};
-
-const GROUP_SCORES: Record<1 | 2 | 3, number> = {
-  1: 10,
-  2: 8,
-  3: 6,
-};
-
-
-// Update calculateScore to accept type instead of section
-export function calculateScore(
-  type: "single" | "group",
-  position: 1 | 2 | 3,
-  grade: GradeType = "none",
-): number {
-  if (type === "single") {
-    // Individual events: 5, 3, 1 + Grade Bonus
-    const base = [0, 5, 3, 1][position] || 0;
-    const bonus = grade !== "none" ? GRADE_BONUS[grade] : 0;
-    return base + bonus;
-  }
-
-  // Group events: 10, 8, 6 + Grade Bonus
-  const base = GROUP_SCORES[position] || 0;
-  const bonus = grade !== "none" ? GRADE_BONUS[grade] : 0;
-  return base + bonus;
-}
+// Export calculateScore from scoring logic
+export { calculateScore } from "./scoring";
 
 export async function updateLiveScore(teamId: string, delta: number) {
   await connectDB();

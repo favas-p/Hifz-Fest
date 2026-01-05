@@ -19,6 +19,7 @@ import {
   Users,
   BarChart,
   Trophy,
+  Calculator,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ const ICONS = {
   polls: BarChart,
   predictions: Trophy,
   festory: MessageCircle,
+  calculator: Calculator,
 
 } satisfies Record<string, LucideIcon>;
 
@@ -265,10 +267,9 @@ export default function Sidenavbar({
         </aside>
         <main className={cn(
           "flex-1 w-full transition-all duration-300 ease-in-out",
-          isOpen ? "ml-[18.5rem]" : "ml-[7.5rem]"
+          isOpen ? "ml-74" : "ml-30"
         )}>{children}</main>
       </div>
     </div>
   );
 }
-
