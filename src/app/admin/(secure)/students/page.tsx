@@ -390,10 +390,11 @@ export default async function StudentsPage() {
           </CardDescription>
           <form
             action={createStudentAction}
-            className="mt-6 grid gap-4 md:grid-cols-2"
+            className="mt-6 grid gap-4 grid-cols-1 md:grid-cols-2"
           >
-            <Input name="name" placeholder="Student name" required />
-            <Input name="badge_uid" placeholder="Badge UID (optional)" />
+            <Input name="name" placeholder="Student name" required className="bg-white/5 border-white/10" />
+            <Input name="badge_uid" placeholder="Badge UID" className="bg-white/5 border-white/10" />
+
             <SearchSelect
               name="team_id"
               defaultValue={teams[0]?.id}
@@ -401,13 +402,18 @@ export default async function StudentsPage() {
               options={teams.map((team) => ({ value: team.id, label: team.name }))}
               placeholder="Select team"
             />
-            <div className="md:col-span-2">
-              <select name="category" defaultValue="" required className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-fuchsia-400 focus:outline-none">
-                <option value="" disabled className="bg-slate-900">Select Category</option>
-                <option value="junior" className="bg-slate-900">Junior</option>
-                <option value="senior" className="bg-slate-900">Senior</option>
-              </select>
-            </div>
+
+            <select
+              name="category"
+              defaultValue=""
+              required
+              className="flex h-10 w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-fuchsia-400 focus:outline-none placeholder:text-white/50 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+            >
+              <option value="" disabled className="bg-slate-900">Select Category</option>
+              <option value="junior" className="bg-slate-900">Junior</option>
+              <option value="senior" className="bg-slate-900">Senior</option>
+            </select>
+
             <Button type="submit" className="md:col-span-2">
               Save Student
             </Button>

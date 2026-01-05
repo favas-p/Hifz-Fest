@@ -12,16 +12,16 @@ import { JsonLd } from "@/components/json-ld";
 
 export const metadata: Metadata = {
   title: {
-    default: "Funoon Fiesta - Showcasing Islamic Art & Culture",
-    template: "%s | Funoon Fiesta",
+    default: "Hifz Fest - Showcasing Islamic Art & Culture",
+    template: "%s | Hifz Fest",
   },
   description:
-    "A premier platform for students to showcase their talents and highlight the rich art forms of Islamic culture. Live scoreboard, admin controls, and jury tools for Funoon Fiesta.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://funoonfiesta.noorululama.org"),
-  keywords: ["Funoon Fiesta", "Islamic Art", "Culture", "Student Festival", "Live Scoreboard", "Arts Competition"],
-  authors: [{ name: "Funoon Fiesta Team" }],
-  creator: "Funoon Fiesta",
-  publisher: "Funoon Fiesta",
+    "A premier platform for students to showcase their talents and highlight the rich art forms of Islamic culture. Live scoreboard, admin controls, and jury tools for Hifz Fest.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://hifzfest.noorululama.org"),
+  keywords: ["Hifz Fest", "Islamic Art", "Culture", "Student Festival", "Live Scoreboard", "Arts Competition"],
+  authors: [{ name: "Hifz Fest Team" }],
+  creator: "Hifz Fest",
+  publisher: "Hifz Fest",
   formatDetection: {
     email: false,
     address: false,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Funoon Fiesta",
+    title: "Hifz Fest",
   },
   icons: {
     icon: [
@@ -43,16 +43,16 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Funoon Fiesta - Showcasing Islamic Art & Culture",
+    title: "Hifz Fest - Showcasing Islamic Art & Culture",
     description: "A premier platform for students to showcase their talents and highlight the rich art forms of Islamic culture.",
-    url: process.env.NEXT_PUBLIC_APP_URL || "https://funoonfiesta.noorululama.org",
-    siteName: "Funoon Fiesta",
+    url: process.env.NEXT_PUBLIC_APP_URL || "https://hifzfest.noorululama.org",
+    siteName: "Hifz Fest",
     images: [
       {
         url: "/img/hero/Fest-logo.webp",
         width: 800,
         height: 600,
-        alt: "Funoon Fiesta Logo",
+        alt: "Hifz Fest Logo",
       },
     ],
     locale: "en_US",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Funoon Fiesta",
+    title: "Hifz Fest",
     description: "Celebrating Islamic Art & Culture through student talent.",
     images: ["/img/hero/Fest-logo.webp"],
   },
@@ -104,7 +104,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#3b0764" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Funoon Fiesta" />
+        <meta name="apple-mobile-web-app-title" content="Hifz Fest" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#3b0764" />
         <meta name="msapplication-config" content="/browserconfig.xml" />

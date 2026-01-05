@@ -48,7 +48,7 @@ export function RegisterTeamForm() {
                         Institute Registration
                     </CardTitle>
                     <CardDescription className="text-white/60">
-                        Register your institution to participate in Funoon Fiesta 2.0
+                        Register your institution to participate in Hifz Fest 2.0
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

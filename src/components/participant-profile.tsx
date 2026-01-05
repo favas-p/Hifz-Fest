@@ -99,8 +99,16 @@ export function ParticipantProfileDisplay({ profile }: ParticipantProfileProps) 
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
             {student.name}
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 font-medium mb-4">
-            {student.chest_no} • {team.name}
+          <p className="text-gray-500 dark:text-gray-400 font-medium mb-4 flex items-center justify-center gap-2 flex-wrap">
+            <span>{student.chest_no}</span>
+            <span>•</span>
+            <span>{team.name}</span>
+            {student.badge_uid && (
+              <>
+                <span>•</span>
+                <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">UID: {student.badge_uid}</span>
+              </>
+            )}
           </p>
 
           <div className="grid grid-cols-3 gap-3 w-full max-w-sm">

@@ -121,8 +121,8 @@ export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps)
                     <button
                         onClick={() => setActiveCategory("general")}
                         className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${activeCategory === "general"
-                                ? "bg-white text-[#8B4513] shadow-sm ring-1 ring-gray-200"
-                                : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
+                            ? "bg-white text-[#8B4513] shadow-sm ring-1 ring-gray-200"
+                            : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
                             }`}
                     >
                         GENERAL
@@ -359,6 +359,11 @@ export function StudentLeaderboard({ students, teams }: StudentLeaderboardProps)
                                         </h4>
                                         <div className="flex items-center gap-2 mt-1 flex-wrap">
                                             <span className="text-xs text-gray-400 font-mono bg-gray-50 px-1.5 rounded whitespace-nowrap">{student.chest_no}</span>
+                                            {student.badge_uid && (
+                                                <span className="text-xs text-gray-400 font-mono bg-gray-50 px-1.5 rounded whitespace-nowrap flex items-center gap-1">
+                                                    UID: {student.badge_uid}
+                                                </span>
+                                            )}
                                             <span className="text-[10px] md:text-xs text-gray-500 border-l border-gray-200 pl-2 leading-tight">
                                                 {student.teamName}
                                             </span>

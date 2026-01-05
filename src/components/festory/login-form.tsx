@@ -127,7 +127,7 @@ export function FestoryLoginForm() {
                         transition={{ delay: 0.4 }}
                         className="text-white/60 text-lg"
                     >
-                        The Social Pulse of Funoon Fiesta
+                        The Social Pulse of Hifz Fest
                     </motion.p>
                 </div>
 

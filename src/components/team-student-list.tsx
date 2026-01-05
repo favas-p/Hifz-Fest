@@ -13,7 +13,8 @@ import {
   User,
   Hash,
   Search,
-  Lock
+  Lock,
+  IdCard
 } from "lucide-react";
 import type { PortalStudent } from "@/lib/types";
 
@@ -245,6 +246,12 @@ export function TeamStudentList({ students, updateAction, deleteAction, isRegist
                           <Hash className="h-3 w-3" />
                           <span className="font-mono">{student.chestNumber}</span>
                         </div>
+                        {student.badge_uid && (
+                          <div className="flex items-center gap-2 mt-0.5 text-sm text-white/60">
+                            <IdCard className="h-3 w-3" />
+                            <span className="font-mono">{student.badge_uid}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="hidden sm:block">
                         <span className={`text-xs px-2 py-1 rounded-full border ${student.category === 'junior'

@@ -15,6 +15,7 @@ interface SearchResult {
     name: string;
     chest_no: string;
     team_id: string;
+    badge_uid?: string;
 }
 
 export function ParticipantSearch() {
@@ -127,6 +128,11 @@ export function ParticipantSearch() {
                                                 <Badge className="text-[10px] px-1.5 py-0 h-5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                                                     {result.chest_no}
                                                 </Badge>
+                                                {result.badge_uid && (
+                                                    <Badge className="text-[10px] px-1.5 py-0 h-5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300 font-mono">
+                                                        UID: {result.badge_uid}
+                                                    </Badge>
+                                                )}
                                                 <span className="text-xs text-gray-500 dark:text-gray-400">
                                                     Team ID: {result.team_id}
                                                 </span>

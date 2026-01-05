@@ -57,8 +57,8 @@ export async function generateMetadata({ params }: ProgramDetailPageProps) {
   }
 
   return {
-    title: `${program.name} Results - Funoon Fiesta`,
-    description: `View the winners and full results for ${program.name} at Funoon Fiesta.`,
+    title: `${program.name} Results - Hifz Fest`,
+    description: `View the winners and full results for ${program.name} at Hifz Fest.`,
   };
 }
 

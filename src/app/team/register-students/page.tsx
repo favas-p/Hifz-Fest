@@ -1,169 +1,11 @@
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { TeamStudentList } from "@/components/team-student-list";
-import { ChestNumberPreview } from "@/components/chest-number-preview";
 import { getCurrentTeam } from "@/lib/auth";
-import { Select } from "@/components/ui/select";
-import {
-  deletePortalStudent,
-  getPortalStudents,
-  upsertPortalStudent,
-  isRegistrationOpen,
-} from "@/lib/team-data";
-
-function redirectWithMessage(message: string, type: "error" | "success" = "error") {
-  const params = new URLSearchParams({ [type]: message });
-  redirect(`/team/register-students?${params.toString()}`);
-}
-
-function generateNextChestNumber(teamName: string, existingStudents: Array<{ chestNumber: string }>): string {
-  const prefix = teamName.slice(0, 2).toUpperCase();
-  const teamStudents = existingStudents.filter((student) => {
-    const chest = student.chestNumber.toUpperCase();
-    return chest.startsWith(prefix) && /^\d{3}$/.test(chest.slice(2));
-  });
-
-  if (teamStudents.length === 0) {
-    return `${prefix}001`;
-  }
-
-  const numbers = teamStudents
-    .map((student) => {
-      const numStr = student.chestNumber.toUpperCase().slice(2);
-      const num = parseInt(numStr, 10);
-      return isNaN(num) ? 0 : num;
-    })
-    .filter((num) => num > 0);
-
-  const maxNumber = numbers.length > 0 ? Math.max(...numbers) : 0;
-  const nextNumber = maxNumber + 1;
-  return `${prefix}${String(nextNumber).padStart(3, "0")}`;
-}
-
-async function createStudentAction(formData: FormData) {
-  "use server";
-  const team = await getCurrentTeam();
-  if (!team) redirect("/team/login");
-
-  const isOpen = await isRegistrationOpen();
-  if (!isOpen) {
-    redirectWithMessage("Registration window is closed. You cannot add students at this time.");
-  }
-
-  const name = String(formData.get("name") ?? "").trim();
-  const category = String(formData.get("category") ?? "") as "junior" | "senior";
-  const badge_uid = String(formData.get("badge_uid") ?? "").trim();
-
-  if (!name) {
-    redirectWithMessage("Student name is required.");
-  }
-  if (!category || (category !== "junior" && category !== "senior")) {
-    redirectWithMessage("Valid category (Junior/Senior) is required.");
-  }
-
-  const students = await getPortalStudents();
-  const chestNumber = generateNextChestNumber(team.teamName, students);
-
-  if (students.some((student) => student.chestNumber.toUpperCase() === chestNumber)) {
-    redirectWithMessage("Chest number already registered.");
-  }
-  if (
-    students.some(
-      (student) =>
-        student.teamId === team.id && student.name.toLowerCase() === name.toLowerCase(),
-    )
-  ) {
-    redirectWithMessage("Student name already exists for this team.");
-  }
-  // Check duplicate UID on client side for immediate feedback? 
-  // We do it in server action properly via upsertPortalStudent which checks DB. 
-  // We can also check local list but it might not be complete or up to date with other teams if UID is global (it should be).
-  // Actually unique is global.
-
-  try {
-    await upsertPortalStudent({
-      name,
-      chestNumber,
-      teamId: team.id,
-      category,
-      badge_uid: badge_uid || undefined,
-    });
-  } catch (error) {
-    redirectWithMessage((error as Error).message);
-  }
-  revalidatePath("/team/register-students");
-  redirectWithMessage("Student added successfully.", "success");
-}
-
-async function updateStudentAction(formData: FormData) {
-  "use server";
-  const team = await getCurrentTeam();
-  if (!team) redirect("/team/login");
-
-  const isOpen = await isRegistrationOpen();
-  if (!isOpen) {
-    redirectWithMessage("Registration window is closed. You cannot edit students at this time.");
-  }
-
-  const studentId = String(formData.get("studentId") ?? "");
-  const name = String(formData.get("name") ?? "").trim();
-  const category = String(formData.get("category") ?? "") as "junior" | "senior";
-  const chestNumber = String(formData.get("chestNumber") ?? "").trim().toUpperCase();
-  const badge_uid = String(formData.get("badge_uid") ?? "").trim();
-
-  if (!studentId) redirectWithMessage("Missing student ID.");
-  if (!name) redirectWithMessage("Student name is required.");
-  if (!category || (category !== "junior" && category !== "senior")) {
-    redirectWithMessage("Valid category (Junior/Senior) is required.");
-  }
-
-  const students = await getPortalStudents();
-  const current = students.find((student) => student.id === studentId);
-  if (!current || current.teamId !== team.id) {
-    redirectWithMessage("You can only edit your own students.");
-  }
-  if (students.some((student) => student.id !== studentId && student.chestNumber === chestNumber)) {
-    redirectWithMessage("Chest number already registered.");
-  }
-  try {
-    await upsertPortalStudent({
-      id: studentId,
-      name,
-      chestNumber,
-      teamId: team.id,
-      category,
-      badge_uid: badge_uid || undefined,
-    });
-  } catch (error) {
-    redirectWithMessage((error as Error).message);
-  }
-  revalidatePath("/team/register-students");
-  redirectWithMessage("Student updated.", "success");
-}
-
-async function deleteStudentAction(formData: FormData) {
-  "use server";
-  const team = await getCurrentTeam();
-  if (!team) redirect("/team/login");
-
-  const isOpen = await isRegistrationOpen();
-  if (!isOpen) {
-    redirectWithMessage("Registration window is closed. You cannot delete students at this time.");
-  }
-
-  const studentId = String(formData.get("studentId") ?? "");
-  const students = await getPortalStudents();
-  const current = students.find((student) => student.id === studentId);
-  if (!current || current.teamId !== team.id) {
-    redirectWithMessage("Cannot delete student outside your team.");
-  }
-  await deletePortalStudent(studentId);
-  revalidatePath("/team/register-students");
-  redirectWithMessage("Student deleted.", "success");
-}
+import { getPortalStudents, isRegistrationOpen } from "@/lib/team-data";
+import { getAllowedParticipants } from "@/lib/allowed-participants";
+import { AddStudentForm } from "@/components/add-student-form";
+import { updateStudentAction, deleteStudentAction } from "@/actions/student";
 
 export default async function RegisterStudentsPage({
   searchParams,
@@ -175,9 +17,10 @@ export default async function RegisterStudentsPage({
   if (!team) {
     redirect("/team/login");
   }
-  const [students, isOpen] = await Promise.all([
+  const [students, isOpen, allowedParticipants] = await Promise.all([
     getPortalStudents(),
     isRegistrationOpen(),
+    getAllowedParticipants(),
   ]);
   const teamStudents = students.filter((student) => student.teamId === team.id);
   const error = typeof params?.error === "string" ? params.error : undefined;
@@ -232,31 +75,14 @@ export default async function RegisterStudentsPage({
         <CardDescription className="text-white/70 mb-4">
           Chest number will be auto-generated based on your team name.
         </CardDescription>
+
         {isOpen ? (
-          <>
-            <ChestNumberPreview teamName={team.teamName} teamStudents={teamStudents} />
-            <form action={createStudentAction} className="mt-4 grid gap-3 sm:gap-4 sm:grid-cols-[1fr_auto_auto_auto]">
-              <Input
-                name="name"
-                placeholder="Enter student name"
-                required
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-              />
-              <Input
-                name="badge_uid"
-                placeholder="RFID/Badge UID (Optional)"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 w-full sm:w-[200px]"
-              />
-              <select name="category" defaultValue="" required className="w-[180px] bg-white/10 border-white/20 text-white rounded-2xl px-4 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                <option value="" disabled className="bg-slate-900">Select Category</option>
-                <option value="junior" className="bg-slate-900">Junior</option>
-                <option value="senior" className="bg-slate-900">Senior</option>
-              </select>
-              <Button type="submit" className="w-full sm:w-auto">
-                Add Student
-              </Button>
-            </form>
-          </>
+          <AddStudentForm
+            allowedParticipants={allowedParticipants}
+            teamName={team.teamName}
+            teamStudents={teamStudents}
+            isOpen={isOpen}
+          />
         ) : (
           <div className="mt-4 p-4 rounded-2xl bg-white/5 border border-white/10">
             <p className="text-sm text-white/60 text-center">

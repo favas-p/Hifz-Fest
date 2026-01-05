@@ -18,8 +18,8 @@ async function getHomeData() {
 }
 
 export const metadata = {
-  title: "Funoon Fiesta | Home",
-  description: "Welcome to Funoon Fiesta. Explore live scores, results, and participant performances.",
+  title: "Hifz Fest | Home",
+  description: "Welcome to Hifz Fest. Explore live scores, results, and participant performances.",
 };
 
 export default async function HomePage() {

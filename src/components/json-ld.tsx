@@ -2,7 +2,7 @@ export function JsonLd() {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Event",
-        "name": "Funoon Fiesta",
+        "name": "Hifz Fest",
         "description": "A premier platform for students to showcase their talents and highlight the rich art forms of Islamic culture.",
         "startDate": "2025-01-01",
         "endDate": "2025-01-05",
@@ -10,7 +10,7 @@ export function JsonLd() {
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "location": {
             "@type": "Place",
-            "name": "Funoon Fiesta Venue",
+            "name": "Hifz Fest Venue",
             "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "Kerala",
@@ -19,8 +19,8 @@ export function JsonLd() {
         },
         "organizer": {
             "@type": "Organization",
-            "name": "Funoon Fiesta Committee",
-            "url": "https://funoonfiesta.noorululama.org"
+            "name": "Hifz Fest Committee",
+            "url": "https://hifzfest.noorululama.org"
         }
     }
 

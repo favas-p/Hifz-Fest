@@ -1,6 +1,6 @@
 {
-  "name": "Funoon Fiesta",
-  "short_name": "Funoon Fiesta",
+  "name": "Hifz Fest",
+  "short_name": "Hifz Fest",
   "description": "A premier platform for students to showcase their talents and highlight the rich art forms of Islamic culture. Live scoreboard, admin controls, and jury tools.",
   "start_url": "/",
   "display": "standalone",
@@ -72,21 +72,35 @@
       "form_factor": "narrow"
     }
   ],
-  "categories": ["education", "entertainment", "social"],
+  "categories": [
+    "education",
+    "entertainment",
+    "social"
+  ],
   "shortcuts": [
     {
       "name": "Scoreboard",
       "short_name": "Scoreboard",
       "description": "View live scoreboard",
       "url": "/scoreboard",
-      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Results",
       "short_name": "Results",
       "description": "View results",
       "url": "/results",
-      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "share_target": {
@@ -100,4 +114,3 @@
     }
   }
 }
-

@@ -41,7 +41,7 @@ export function PWAInstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
+
       // Check if user has dismissed before
       const dismissed = localStorage.getItem("pwa-install-dismissed");
       if (!dismissed) {
@@ -78,11 +78,11 @@ export function PWAInstallPrompt() {
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    
+
     if (outcome === "accepted") {
       setIsInstalled(true);
     }
-    
+
     setDeferredPrompt(null);
     setShowPrompt(false);
   };
@@ -112,15 +112,15 @@ export function PWAInstallPrompt() {
                   <Download className="h-5 w-5 text-white" />
                 </div>
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold text-white mb-1">
-                  Install Funoon Fiesta
+                  Install Hifz Fest
                 </h3>
                 <p className="text-xs text-white/70 mb-3">
                   Install our app for a better experience with offline access and faster loading.
                 </p>
-                
+
                 <div className="flex gap-2">
                   <Button
                     onClick={handleInstallClick}

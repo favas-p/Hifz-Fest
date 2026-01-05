@@ -69,7 +69,7 @@ export function AboutSection() {
 
                             <div className="space-y-6 text-lg text-gray-600 leading-relaxed font-light">
                                 <p>
-                                    More than just a festival, <strong className="text-[#8B4513] font-medium">Funoon Fiesta</strong> is a breathing legacy.
+                                    More than just a festival, <strong className="text-[#8B4513] font-medium">Hifz Fest</strong> is a breathing legacy.
                                     For over a century, the Malabar coast has resonated with the soulful rhythms of knowledge
                                     and faith. Today, we bridge that historic past with a vibrant, creative future.
                                 </p>

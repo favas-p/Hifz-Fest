@@ -78,7 +78,7 @@ export function HomeRealtime({ teams: initialTeams, liveScores: initialLiveScore
           {/* Main Title - Charutha Font */}
           <div>
             <h1 className="text-[#A13A24] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 font-['Charutha'] tracking-wide leading-5 md:leading-7">
-              HIFZ FIESTA '25-26
+              HIFZ FEST '25-26
             </h1>
 
             {/* Subtitle - Bricolage Font */}
@@ -89,8 +89,8 @@ export function HomeRealtime({ teams: initialTeams, liveScores: initialLiveScore
 
           {/* Description */}
           <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto mb-8 px-4 leading-5 font-light">
-            For a hundred years, the Malabar coast has echoed with knowledge, faith, and art. Funoon
-            Fiesta 2025–26 bridges this rich legacy with a new generation, honoring Samastha’s
+            For a hundred years, the Malabar coast has echoed with knowledge, faith, and art. Hifz
+            Fest 2025–26 bridges this rich legacy with a new generation, honoring Samastha’s
             centenary under the theme “Shathakam Saakshi.”
           </p>
 
@@ -233,7 +233,7 @@ export function HomeRealtime({ teams: initialTeams, liveScores: initialLiveScore
               <div className="flex-1">
                 <Badge className="bg-cyan-100 text-cyan-800 border-cyan-200 mb-3 sm:mb-4 text-xs sm:text-sm">Need help?</Badge>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-[#8B4513] mb-3 sm:mb-4">
-                  Funoon Fiesta Control Room
+                  Hifz Fest Control Room
                 </h2>
                 <p className="text-gray-700 text-base sm:text-lg leading-relaxed max-w-2xl">
                   Contact us for support, inquiries, or assistance with the platform.

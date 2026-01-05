@@ -430,6 +430,11 @@ export const StudentManager = React.memo(function StudentManager({
                     {teamMap.get(student.team_id) ?? "Unknown team"}
                   </span>
                   <span className="rounded-full border border-white/15 px-3 py-1">Chest #{student.chest_no}</span>
+                  {student.badge_uid && (
+                    <span className="rounded-full border border-white/15 px-3 py-1 font-mono">
+                      UID: {student.badge_uid}
+                    </span>
+                  )}
                   <span className={`rounded-full border border-white/15 px-3 py-1 uppercase font-bold tracking-wider ${student.category === 'junior' ? 'text-blue-300 border-blue-500/30' : 'text-emerald-300 border-emerald-500/30'}`}>
                     {student.category || 'N/A'}
                   </span>
