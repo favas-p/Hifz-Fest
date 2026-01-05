@@ -73,14 +73,15 @@ async function buildEntries(
     if (!team) {
       throw new Error("Invalid team selected");
     }
+    const grade = sanitizeGrade(winner.grade);
     return {
       position: winner.position,
       team_id: team.id,
-      grade: "none" as const,
+      grade,
       score: calculateScore(
         "group",
         winner.position,
-        "none",
+        grade,
       ),
     };
   });

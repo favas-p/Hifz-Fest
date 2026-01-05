@@ -316,7 +316,7 @@ export function AddResultForm({
               <CardTitle>Add podium placements</CardTitle>
               <CardDescription className="mt-2">
                 Select {isSingle ? "students" : "teams"} for 1st, 2nd and 3rd. Grades apply
-                only to single events.
+                to both single and group events.
               </CardDescription>
             </div>
             <Button
