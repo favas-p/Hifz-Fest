@@ -174,6 +174,8 @@ export function SectionResults({ programs, results, programMap, students, teams 
                     <StudentLeaderboard
                         students={leaderboardData.data as Student[]}
                         teams={teams}
+                        results={results}
+                        programMap={programMap}
                     />
                 ) : (
                     <TeamLeaderboard
