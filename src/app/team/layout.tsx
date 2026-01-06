@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Home } from "lucide-react";
 import { logoutTeam, getCurrentTeam } from "@/lib/auth";
 import { TeamNav } from "@/components/team-nav";
 
@@ -21,7 +23,7 @@ export default async function TeamLayout({ children }: { children: ReactNode }) 
           className="rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 px-4 sm:px-6 py-3 sm:py-4"
           style={{ borderColor: team?.themeColor ?? "#0ea5e9" }}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
               <Badge tone="cyan" className="text-xs sm:text-sm mb-1 sm:mb-0">Team Portal</Badge>
               <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold truncate">
@@ -36,13 +38,23 @@ export default async function TeamLayout({ children }: { children: ReactNode }) 
                 )}
               </h1>
             </div>
-            {team && (
-              <form action={logoutAction} className="shrink-0">
-                <Button type="submit" variant="ghost" size="sm" className="w-full sm:w-auto">
-                  Logout
-                </Button>
-              </form>
-            )}
+            {/* Actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              <Button asChild variant="ghost" size="sm" className="px-2 sm:px-3 hover:rounded-2xl">
+                <Link href="/">
+                  <Home className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Home</span>
+                </Link>
+              </Button>
+
+              {team && (
+                <form action={logoutAction}>
+                  <Button type="submit" variant="ghost" size="sm">
+                    Logout
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
         </header>
         {team && (
