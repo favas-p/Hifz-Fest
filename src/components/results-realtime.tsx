@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { ProgramsGrid } from "@/components/programs-grid";
-import { SectionResults } from "@/components/section-results";
+
 import { StudentLeaderboard } from "@/components/student-leaderboard";
 import { useResultUpdates } from "@/hooks/use-realtime";
 import { useRouter } from "next/navigation";
@@ -29,8 +29,8 @@ export function ResultsRealtime({
 
   const tabs = [
     { id: "all", label: "All Programs" },
-    { id: "section", label: "Section Wise" },
-    { id: "leaderboard", label: "Student Leaderboard" },
+
+    { id: "leaderboard", label: "Leaderboard" },
   ] as const;
 
   useResultUpdates(() => {
@@ -108,25 +108,6 @@ export function ResultsRealtime({
           />
         )}
 
-        {activeTab === "section" && (
-          <div className="container mx-auto px-4 py-8 max-w-6xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8 text-center"
-            >
-              <h2 className="text-3xl font-bold text-[#8B4513] mb-2">Section Results</h2>
-              <p className="text-gray-600">Filter results by section</p>
-            </motion.div>
-            <SectionResults
-              programs={initialPrograms}
-              results={initialResults}
-              programMap={initialProgramMap}
-              students={students}
-              teams={teams}
-            />
-          </div>
-        )}
 
         {activeTab === "leaderboard" && (
           <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -135,12 +116,14 @@ export function ResultsRealtime({
               animate={{ opacity: 1, y: 0 }}
               className="mb-12 text-center"
             >
-              <h2 className="text-3xl font-bold text-[#8B4513] mb-2">Student Leaderboard</h2>
+              <h2 className="text-3xl font-bold text-[#8B4513] mb-2">Leaderboard</h2>
               <p className="text-gray-600">Top performers across all events</p>
             </motion.div>
             <StudentLeaderboard
               students={leaderboardStudents}
               teams={teams}
+              results={initialResults}
+              programMap={initialProgramMap}
             />
           </div>
         )}
