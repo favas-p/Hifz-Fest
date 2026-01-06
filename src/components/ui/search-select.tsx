@@ -39,7 +39,7 @@ export function SearchSelect({
 }: SearchSelectProps) {
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(
-    value ?? defaultValue ?? options[0]?.value ?? "",
+    value ?? defaultValue ?? "",
   );
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -60,8 +60,7 @@ export function SearchSelect({
   }, [isControlled, value]);
 
   useEffect(() => {
-    // Don't auto-select if value is explicitly empty string in controlled mode
-    if (isControlled && selectedValue === "") {
+    if (selectedValue === "") {
       return;
     }
     if (!options.some((option) => option.value === selectedValue)) {

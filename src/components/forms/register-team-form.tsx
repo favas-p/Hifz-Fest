@@ -4,6 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { registerTeam } from "@/lib/user-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SearchSelect } from "@/components/ui/search-select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -65,11 +66,24 @@ export function RegisterTeamForm() {
                             {/* Institute Details */}
                             <div className="space-y-4 md:col-span-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="name">Institute / Dars Name</Label>
-                                    <Input
-                                        id="name" name="name"
-                                        placeholder="e.g. Al Huda Islamic College"
-                                        className="bg-white/5 border-white/10 focus-visible:ring-fuchsia-500"
+                                    <Label htmlFor="name">College Name</Label>
+                                    <SearchSelect
+                                        name="name"
+                                        placeholder="Select College..."
+                                        options={[
+                                            { label: "Shihab Thangal Thahfeezul Quran College", value: "Kannyala College" },
+                                            { label: "Sayyid Muhammedali Shihab Thangal Thahfeezul Quran College", value: "Pazamallur College" },
+                                            { label: "Hafiz Mammu Molla College Of Thahfeezul Quran", value: "Puthanpalli" },
+                                            { label: "Panakkad Shihab Thangal & Shamsul Ulama Memorial Hifzul Quran College", value: "Kottakkunnu College" },
+                                            { label: "Darul Azhar Islamic Academy", value: "Koduvalli College" },
+                                            { label: "Darul Quran Islamic Academy", value: "Purang College" },
+                                            { label: "Darussalam Thahfeezul Quran College", value: "Indianoor College" },
+                                            { label: "Muhammediyya Hifzul Quran College", value: "Kunil College" },
+                                            { label: "KMO Hifz College", value: "Karulayi College" },
+                                            { label: "Thahfeezul Quran College", value: "Perinthalmanna College" },
+                                            { label: "Siddeeqiyya Hifzul Quran College", value: "Anakkayam College" },
+                                        ]}
+                                        className="w-full"
                                         required
                                     />
                                     {state?.fieldErrors?.name && (
@@ -94,10 +108,26 @@ export function RegisterTeamForm() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="district">District</Label>
-                                <Input
-                                    id="district" name="district"
-                                    placeholder="e.g. Malappuram"
-                                    className="bg-white/5 border-white/10 focus-visible:ring-fuchsia-500"
+                                <SearchSelect
+                                    name="district"
+                                    placeholder="Select District..."
+                                    options={[
+                                        { label: "Kasaragod", value: "Kasaragod" },
+                                        { label: "Kannur", value: "Kannur" },
+                                        { label: "Wayanad", value: "Wayanad" },
+                                        { label: "Kozhikode (Calicut)", value: "Kozhikode" },
+                                        { label: "Malappuram", value: "Malappuram" },
+                                        { label: "Palakkad", value: "Palakkad" },
+                                        { label: "Thrissur", value: "Thrissur" },
+                                        { label: "Ernakulam", value: "Ernakulam" },
+                                        { label: "Idukki", value: "Idukki" },
+                                        { label: "Kottayam", value: "Kottayam" },
+                                        { label: "Alappuzha", value: "Alappuzha" },
+                                        { label: "Pathanamthitta", value: "Pathanamthitta" },
+                                        { label: "Kollam", value: "Kollam" },
+                                        { label: "Thiruvananthapuram", value: "Thiruvananthapuram" },
+                                    ]}
+                                    className="w-full"
                                     required
                                 />
                                 {state?.fieldErrors?.district && (
@@ -107,7 +137,7 @@ export function RegisterTeamForm() {
 
                             {/* Principal Info */}
                             <div className="space-y-2">
-                                <Label htmlFor="principal_name">Principal's Name</Label>
+                                <Label htmlFor="principal_name">Team Manager's Name</Label>
                                 <Input
                                     id="principal_name" name="principal_name"
                                     placeholder="Full Name"
@@ -119,10 +149,10 @@ export function RegisterTeamForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="principal_phone">Principal's Phone</Label>
+                                <Label htmlFor="principal_phone">Team Manager's Phone</Label>
                                 <Input
                                     id="principal_phone" name="principal_phone" type="tel"
-                                    placeholder="+91..."
+                                    defaultValue="+91 "
                                     className="bg-white/5 border-white/10 focus-visible:ring-fuchsia-500"
                                     required
                                 />
@@ -136,7 +166,7 @@ export function RegisterTeamForm() {
                                 <Label htmlFor="whatsapp_number">WhatsApp Number</Label>
                                 <Input
                                     id="whatsapp_number" name="whatsapp_number" type="tel"
-                                    placeholder="+91..."
+                                    defaultValue="+91 "
                                     className="bg-white/5 border-white/10 focus-visible:ring-fuchsia-500"
                                     required
                                 />
@@ -149,7 +179,7 @@ export function RegisterTeamForm() {
                                 <Label htmlFor="union_official_number">Union Official Number (Optional)</Label>
                                 <Input
                                     id="union_official_number" name="union_official_number" type="tel"
-                                    placeholder="+91..."
+                                    defaultValue="+91 "
                                     className="bg-white/5 border-white/10 focus-visible:ring-fuchsia-500"
                                 />
                             </div>
@@ -193,6 +223,6 @@ export function RegisterTeamForm() {
                     </p>
                 </CardFooter>
             </Card>
-        </motion.div>
+        </motion.div >
     );
 }

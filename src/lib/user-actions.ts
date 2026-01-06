@@ -26,6 +26,24 @@ const RegisterTeamSchema = z.object({
     path: ["confirmPassword"],
 });
 
+// Distinct color palette for teams
+// Distinct color palette for teams (Optimized for dark mode/contrast)
+const DISTINCT_COLORS = [
+    "#ef4444", "#ea580c", "#d97706", "#ca8a04", "#65a30d",
+    "#16a34a", "#059669", "#0d9488", "#0891b2", "#0284c7",
+    "#2563eb", "#4f46e5", "#7c3aed", "#9333ea", "#c026d3",
+    "#db2777", "#e11d48", "#57534e", "#475569", "#b45309",
+    "#3f6212", "#0f766e", "#1e40af", "#6b21a8", "#9f1239"
+];
+
+function isTooLight(hex: string) {
+    const r = parseInt(hex.substr(1, 2), 16);
+    const g = parseInt(hex.substr(3, 2), 16);
+    const b = parseInt(hex.substr(5, 2), 16);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return yiq >= 180; // Threshold: 128 is mid-gray, ~180 excludes distinctively light colors
+}
+
 export async function registerTeam(prevState: any, formData: FormData) {
     try {
         const rawData = Object.fromEntries(formData.entries());
@@ -57,6 +75,46 @@ export async function registerTeam(prevState: any, formData: FormData) {
         const hashedPassword = await hash(password, 10);
         const teamId = `team-${randomUUID().slice(0, 8)}`;
 
+        // Generate Unique Color
+        const usedColorsRaw = await TeamModel.distinct("color");
+        const usedColors = new Set(usedColorsRaw.map((c: string) => c.toLowerCase()));
+        let color = "";
+
+        // 1. Try to pick an unused color from the distinct palette
+        for (const c of DISTINCT_COLORS) {
+            if (!usedColors.has(c.toLowerCase())) {
+                color = c;
+                break;
+            }
+        }
+
+        // 2. If all palette colors are used, fallback to a random unique color
+        // Ensure it's not too light (avoid white/pastels)
+        if (!color) {
+            let isUniqueAndDark = false;
+            let attempts = 0;
+
+            while (!isUniqueAndDark && attempts < 50) {
+                const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+                const candidate = `#${randomHex}`;
+
+                if (!usedColors.has(candidate)) {
+                    // Check brightness
+                    if (!isTooLight(candidate)) {
+                        color = candidate;
+                        isUniqueAndDark = true;
+                    }
+                }
+                attempts++;
+            }
+
+            // Fallback if we fail to find a dark unique color (unlikely but safe)
+            if (!color) {
+                const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+                color = `#${randomHex}`;
+            }
+        }
+
         // Create Team
         await TeamModel.create({
             id: teamId,
@@ -64,7 +122,7 @@ export async function registerTeam(prevState: any, formData: FormData) {
             // For now, mapping optional fields or defaults for legacy structure
             leader: principal_name, // Using Principal as "Leader" for legacy compatibility
             leader_photo: "/img/default_team_logo.png", // Default placeholder
-            color: "#" + Math.floor(Math.random() * 16777215).toString(16), // Random color
+            color, // Use the generated unique color
             description: `${place}, ${district}`,
             contact: whatsapp_number,
             total_points: 0,

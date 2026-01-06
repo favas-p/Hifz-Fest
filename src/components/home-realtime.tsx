@@ -78,7 +78,7 @@ export function HomeRealtime({ teams: initialTeams, liveScores: initialLiveScore
           {/* Main Title - Charutha Font */}
           <div>
             <h1 className="text-[#A13A24] text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 font-['Charutha'] tracking-wide leading-5 md:leading-7">
-              HIFZ FEST '25-26
+              HIFZ FEST 26
             </h1>
 
             {/* Subtitle - Bricolage Font */}
