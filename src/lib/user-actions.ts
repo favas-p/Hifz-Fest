@@ -36,12 +36,40 @@ const DISTINCT_COLORS = [
     "#3f6212", "#0f766e", "#1e40af", "#6b21a8", "#9f1239"
 ];
 
+// Helper to parsing hex to RGB
+function hexToRgb(hex: string) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+// Calculate color distance (Weighted Euclidean)
+function colorDistance(hex1: string, hex2: string) {
+    const rgb1 = hexToRgb(hex1);
+    const rgb2 = hexToRgb(hex2);
+    if (!rgb1 || !rgb2) return 0;
+
+    const rmean = (rgb1.r + rgb2.r) / 2;
+    const r = rgb1.r - rgb2.r;
+    const g = rgb1.g - rgb2.g;
+    const b = rgb1.b - rgb2.b;
+
+    return Math.sqrt((((512 + rmean) * r * r) >> 8) + 4 * g * g + (((767 - rmean) * b * b) >> 8));
+}
+
 function isTooLight(hex: string) {
     const r = parseInt(hex.substr(1, 2), 16);
     const g = parseInt(hex.substr(3, 2), 16);
     const b = parseInt(hex.substr(5, 2), 16);
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     return yiq >= 180; // Threshold: 128 is mid-gray, ~180 excludes distinctively light colors
+}
+
+function isSimilar(color1: string, color2: string, threshold = 100) {
+    return colorDistance(color1, color2) < threshold;
 }
 
 export async function registerTeam(prevState: any, formData: FormData) {
@@ -76,39 +104,41 @@ export async function registerTeam(prevState: any, formData: FormData) {
         const teamId = `team-${randomUUID().slice(0, 8)}`;
 
         // Generate Unique Color
-        const usedColorsRaw = await TeamModel.distinct("color");
-        const usedColors = new Set(usedColorsRaw.map((c: string) => c.toLowerCase()));
+        const usedColorsRaw: string[] = await TeamModel.distinct("color");
         let color = "";
 
-        // 1. Try to pick an unused color from the distinct palette
+        // 1. Try to pick a color from the distinct palette that isn't similar to any used color
         for (const c of DISTINCT_COLORS) {
-            if (!usedColors.has(c.toLowerCase())) {
+            const isTooClose = usedColorsRaw.some(used => isSimilar(c, used, 100)); // Threshold 100 is decent for RGB diff
+            if (!isTooClose) {
                 color = c;
                 break;
             }
         }
 
-        // 2. If all palette colors are used, fallback to a random unique color
-        // Ensure it's not too light (avoid white/pastels)
+        // 2. If all palette colors are used or too similar, fallback to a random color
+        // Ensure it's not too light AND not similar to existing colors
         if (!color) {
-            let isUniqueAndDark = false;
+            let isUniqueAndValid = false;
             let attempts = 0;
 
-            while (!isUniqueAndDark && attempts < 50) {
+            while (!isUniqueAndValid && attempts < 100) {
                 const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
                 const candidate = `#${randomHex}`;
 
-                if (!usedColors.has(candidate)) {
-                    // Check brightness
-                    if (!isTooLight(candidate)) {
+                // Check brightness
+                if (!isTooLight(candidate)) {
+                    // Check similarity
+                    const isTooClose = usedColorsRaw.some(used => isSimilar(candidate, used, 80)); // Slightly lower threshold for random
+                    if (!isTooClose) {
                         color = candidate;
-                        isUniqueAndDark = true;
+                        isUniqueAndValid = true;
                     }
                 }
                 attempts++;
             }
 
-            // Fallback if we fail to find a dark unique color (unlikely but safe)
+            // Fallback if we fail to find a perfect match
             if (!color) {
                 const randomHex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
                 color = `#${randomHex}`;

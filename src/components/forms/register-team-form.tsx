@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { registerTeam } from "@/lib/user-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +35,7 @@ const initialState = {
 };
 
 export function RegisterTeamForm() {
-    const [state, formAction] = useFormState(registerTeam, initialState);
+    const [state, formAction] = useActionState(registerTeam, initialState);
 
     return (
         <motion.div

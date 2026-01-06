@@ -324,7 +324,7 @@ export function LiveScorePulse({ teams, liveScores }: LiveScorePulseProps) {
         {/* Team Cards - Left Column */}
         <div className="lg:col-span-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {rankedTeams.map((team, index) => (
+            {rankedTeams.slice(0, 6).map((team, index) => (
               <TeamCard key={team.id} team={team} index={index} rank={team.rank} maxPoints={maxPoints} />
             ))}
           </div>
