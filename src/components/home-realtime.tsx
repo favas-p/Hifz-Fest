@@ -83,15 +83,13 @@ export function HomeRealtime({ teams: initialTeams, liveScores: initialLiveScore
 
             {/* Subtitle - Bricolage Font */}
             <h2 className="text-black text-xl sm:text-xl md:text-3xl font-['Bricolage'] mb-6 font-semibold tracking-tight">
-              Showcasing Islamic Art & Culture
+              Celebrating Quranic Knowledge & Creativity
             </h2>
           </div>
 
           {/* Description */}
           <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto mb-8 px-4 leading-5 font-light">
-            For a hundred years, the Malabar coast has echoed with knowledge, faith, and art. Hifz
-            Fest 2025–26 bridges this rich legacy with a new generation, honoring Samastha’s
-            centenary under the theme “Shathakam Saakshi.”
+            Rooted in the Malabar coast’s rich Quranic legacy, Hifz Fest 2025–26 unites young minds at Jamia Nooriya in a creative celebration of memorization, recitation, and Quran-inspired arts, nurturing faith, excellence, and devotion to the Holy Quran.
           </p>
 
           {/* CTA Buttons */}

@@ -64,21 +64,22 @@ export function AboutSection() {
                             </span>
 
                             <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#3A2D28] leading-[1.1] mb-6">
-                                Where <span className="text-[#8B4513]">Culture</span> Meets <span className="italic font-light">Creativity</span>
+                                Where <span className="text-[#8B4513]">Faith</span> Inspires <span className="italic font-light">Excellence</span>
                             </h2>
 
                             <div className="space-y-6 text-lg text-gray-600 leading-relaxed font-light">
                                 <p>
-                                    More than just a festival, <strong className="text-[#8B4513] font-medium">Hifz Fest</strong> is a breathing legacy.
-                                    For over a century, the Malabar coast has resonated with the soulful rhythms of knowledge
-                                    and faith. Today, we bridge that historic past with a vibrant, creative future.
+                                    More than a celebration, <strong className="text-[#8B4513] font-medium">Hifz Fest</strong> is a living
+                                    expression of devotion to the Holy Quran. Hosted at Jamia Nooriya under the guidance of CCQS,
+                                    the festival honors a legacy where knowledge, discipline, and faith grow together.
                                 </p>
                                 <p>
-                                    We are a canvas for the community—illuminating the diverse artistry of Islamic culture.
-                                    From the intricate strokes of calligraphy to the powerful verses of poetry, we provide
-                                    the platform for stories to be told and heritage to be preserved through passion.
+                                    Bringing together over a hundred students from multiple institutions, Hifz Fest creates a
+                                    refined platform for Quran memorization, recitation, and Quran-inspired creativity—bridging
+                                    centuries of Malabar’s Quranic tradition with a new generation of learners.
                                 </p>
                             </div>
+
 
                             <div className="pt-4">
                                 <Link href="https://www.noorululama.org/">
