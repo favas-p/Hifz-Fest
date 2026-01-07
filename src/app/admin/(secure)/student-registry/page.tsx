@@ -1,4 +1,4 @@
-import { getStudentRegistry, bulkImportToRegistry, getRegisteredStudentCount } from "@/actions/student-registry";
+import { getStudentRegistry, bulkImportToRegistry, getRegisteredStudentCount, getRegisteredStudents, getTeamsShort } from "@/actions/student-registry";
 import { StudentRegistryUI } from "@/components/student-registry-ui";
 import { GraduationCap, Database, FileUp } from "lucide-react";
 import fs from "fs";
@@ -39,6 +39,8 @@ async function checkAndSeedRegistry() {
 export default async function StudentRegistryPage() {
     const students = await checkAndSeedRegistry();
     const registeredCount = await getRegisteredStudentCount();
+    const registeredStudents = await getRegisteredStudents();
+    const teams = await getTeamsShort();
 
     return (
         <div className="space-y-8 pb-10">
@@ -93,7 +95,11 @@ export default async function StudentRegistryPage() {
                 </div>
             </div>
 
-            <StudentRegistryUI initialStudents={students} />
+            <StudentRegistryUI
+                initialStudents={students}
+                initialRegisteredStudents={registeredStudents}
+                teams={teams}
+            />
         </div>
     );
 }

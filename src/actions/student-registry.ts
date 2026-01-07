@@ -2,12 +2,25 @@
 
 import { revalidatePath } from "next/cache";
 import { connectDB } from "@/lib/db";
-import { StudentRegistryModel, StudentModel } from "@/lib/models";
+import { StudentRegistryModel, StudentModel, TeamModel } from "@/lib/models";
 import { StudentRegistry } from "@/lib/types";
 
 export async function getRegisteredStudentCount() {
     await connectDB();
     return await StudentModel.countDocuments();
+}
+
+export async function getRegisteredStudents() {
+    await connectDB();
+    // Sort by badge_uid as requested
+    const students = await StudentModel.find().sort({ badge_uid: 1 }).lean();
+    return JSON.parse(JSON.stringify(students));
+}
+
+export async function getTeamsShort() {
+    await connectDB();
+    const teams = await TeamModel.find({}, { id: 1, name: 1 }).lean();
+    return JSON.parse(JSON.stringify(teams));
 }
 
 export async function getStudentRegistry(): Promise<StudentRegistry[]> {
