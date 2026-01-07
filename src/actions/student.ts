@@ -90,16 +90,7 @@ export async function createStudentAction(formData: FormData) {
         return;
     }
 
-    // Also check if name already exists in team (optional, but good practice)
-    if (
-        students.some(
-            (student) =>
-                student.teamId === team.id && student.name.toLowerCase() === officialName.toLowerCase(),
-        )
-    ) {
-        redirectWithMessage("Student name already exists for this team.");
-        return;
-    }
+
 
     try {
         await upsertPortalStudent({
