@@ -113,11 +113,11 @@ export function InstituteRegistryUI({ initialInstitutes }: InstituteRegistryUIPr
                         <form onSubmit={handleAdd} className="space-y-4 pt-4">
                             <div className="space-y-2">
                                 <label className="text-xs uppercase text-white/40 font-bold ml-1">Full Institute Name</label>
-                                <Input name="name" required className="bg-white/5 border-white/10 rounded-2xl" />
+                                <Input name="name" required className="bg-white/5 border-white/10 rounded-2xl text-white" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs uppercase text-white/40 font-bold ml-1">Short Name/Value (Optional)</label>
-                                <Input name="shortName" className="bg-white/5 border-white/10 rounded-2xl" />
+                                <Input name="shortName" className="bg-white/5 border-white/10 rounded-2xl text-white" />
                             </div>
                             <DialogFooter>
                                 <Button type="submit" disabled={isPending} className="bg-purple-600 rounded-xl">
