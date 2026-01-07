@@ -5,15 +5,17 @@ import { StudentModel } from "@/lib/models";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ chestNumber: string }> }
+  { params }: { params: Promise<{ uid: string }> }
 ) {
   try {
-    const { chestNumber } = await params;
-    
+    const { uid } = await params;
+
     // Verify student exists
     await connectDB();
-    const student = await StudentModel.findOne({ chest_no: chestNumber }).lean();
-    
+    const student = await StudentModel.findOne({
+      $or: [{ id: uid }, { chest_no: uid }, { badge_uid: uid }]
+    }).lean<any>();
+
     if (!student) {
       return NextResponse.json(
         { error: "Participant not found" },
@@ -23,10 +25,11 @@ export async function GET(
 
     // Get base URL from request
     const baseUrl = request.nextUrl.origin;
-    const qrCodeDataUrl = await generateParticipantQR(chestNumber, baseUrl);
-    
+    const qrIdentifier = student.badge_uid || student.chest_no;
+    const qrCodeDataUrl = await generateParticipantQR(qrIdentifier, baseUrl);
+
     // Return as JSON with data URL
-    return NextResponse.json({ qrCode: qrCodeDataUrl, chestNumber });
+    return NextResponse.json({ qrCode: qrCodeDataUrl, identifier: qrIdentifier });
   } catch (error) {
     console.error("QR generation error:", error);
     return NextResponse.json(

@@ -58,9 +58,10 @@ export function ParticipantSearch() {
         }
     };
 
-    const handleSelectParticipant = (chestNumber: string) => {
+    const handleSelectParticipant = (participant: SearchResult) => {
+        const identifier = participant.badge_uid || participant.chest_no;
         startTransition(() => {
-            router.push(`/participant/${chestNumber}`);
+            router.push(`/participant/${identifier}`);
         });
     };
 
@@ -74,7 +75,7 @@ export function ParticipantSearch() {
     return (
         <div className="w-full max-w-2xl mx-auto">
             <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
                 <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-2 flex items-center gap-2 border border-gray-100 dark:border-gray-700">
                     <div className="flex-1 flex items-center gap-3 px-3">
                         <Search className="w-5 h-5 text-gray-400" />
@@ -113,7 +114,7 @@ export function ParticipantSearch() {
                             {results.map((result) => (
                                 <div
                                     key={result.id}
-                                    onClick={() => handleSelectParticipant(result.chest_no)}
+                                    onClick={() => handleSelectParticipant(result)}
                                     className="p-4 hover:bg-purple-50 dark:hover:bg-purple-900/10 cursor-pointer transition-colors flex items-center justify-between group"
                                 >
                                     <div className="flex items-center gap-4">

@@ -5,10 +5,10 @@ import QRCode from "qrcode";
  * QR code contains: /participant/{chest_number}
  * This allows direct scanning to view participant profile
  */
-export async function generateParticipantQR(chestNumber: string, baseUrl?: string): Promise<string> {
+export async function generateParticipantQR(identifier: string, baseUrl?: string): Promise<string> {
   const urlBase = baseUrl || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const url = `${urlBase}/participant/${chestNumber}`;
-  
+  const url = `${urlBase}/participant/${identifier}`;
+
   try {
     const dataUrl = await QRCode.toDataURL(url, {
       errorCorrectionLevel: "M",
@@ -30,11 +30,11 @@ export async function generateParticipantQR(chestNumber: string, baseUrl?: strin
 /**
  * Generate QR code as SVG string
  */
-export async function generateParticipantQRSVG(chestNumber: string): Promise<string> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                  (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
-  const url = `${baseUrl}/participant/${chestNumber}`;
-  
+export async function generateParticipantQRSVG(identifier: string): Promise<string> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
+  const url = `${baseUrl}/participant/${identifier}`;
+
   try {
     const svg = await QRCode.toString(url, {
       type: "svg",

@@ -89,9 +89,9 @@ export async function getParticipantProfile(
 ): Promise<ParticipantProfile | null> {
   await connectDB();
 
-  // Find student by ID or chest number
+  // Find student by ID or chest number or badge_uid
   const student = await StudentModel.findOne({
-    $or: [{ id: identifier }, { chest_no: identifier }],
+    $or: [{ id: identifier }, { chest_no: identifier }, { badge_uid: identifier }],
   }).lean<Student>();
 
   if (!student) return null;
@@ -225,7 +225,7 @@ export async function getParticipantProfile(
   return {
     student: JSON.parse(JSON.stringify(student)),
     team: JSON.parse(JSON.stringify(team)),
-    registrations: enrichedRegistrations,
+    registrations: JSON.parse(JSON.stringify(enrichedRegistrations)),
     totalPoints: student.total_points,
     stats,
   };

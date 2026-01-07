@@ -6,12 +6,12 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 interface ParticipantPageProps {
-    params: Promise<{ chestNumber: string }>;
+    params: Promise<{ uid: string }>;
 }
 
 export async function generateMetadata({ params }: ParticipantPageProps) {
-    const { chestNumber } = await params;
-    const profile = await getParticipantProfile(chestNumber);
+    const { uid } = await params;
+    const profile = await getParticipantProfile(uid);
 
     if (!profile) {
         return {
@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: ParticipantPageProps) {
 }
 
 export default async function ParticipantPage({ params }: ParticipantPageProps) {
-    const { chestNumber } = await params;
-    const profile = await getParticipantProfile(chestNumber);
+    const { uid } = await params;
+    const profile = await getParticipantProfile(uid);
 
     if (!profile) {
         notFound();

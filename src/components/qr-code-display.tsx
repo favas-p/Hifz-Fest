@@ -7,11 +7,11 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 
 interface QRCodeDisplayProps {
-  chestNumber: string;
+  identifier: string;
   participantName?: string;
 }
 
-export function QRCodeDisplay({ chestNumber, participantName }: QRCodeDisplayProps) {
+export function QRCodeDisplay({ identifier, participantName }: QRCodeDisplayProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export function QRCodeDisplay({ chestNumber, participantName }: QRCodeDisplayPro
     async function fetchQRCode() {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/participants/${chestNumber}/qr`);
+        const response = await fetch(`/api/participants/${identifier}/qr`);
         if (response.ok) {
           const data = await response.json();
           setQrCode(data.qrCode);
@@ -36,14 +36,14 @@ export function QRCodeDisplay({ chestNumber, participantName }: QRCodeDisplayPro
     }
 
     fetchQRCode();
-  }, [chestNumber]);
+  }, [identifier]);
 
   const handleDownload = () => {
     if (!qrCode) return;
 
     const link = document.createElement("a");
     link.href = qrCode;
-    link.download = `qr-code-${chestNumber}.png`;
+    link.download = `qr-code-${identifier}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -86,7 +86,7 @@ export function QRCodeDisplay({ chestNumber, participantName }: QRCodeDisplayPro
           <div className="bg-white p-4 rounded-lg">
             <Image
               src={qrCode}
-              alt={`QR Code for ${chestNumber}`}
+              alt={`QR Code for ${identifier}`}
               width={200}
               height={200}
               className="w-48 h-48"

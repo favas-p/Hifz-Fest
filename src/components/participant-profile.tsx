@@ -129,7 +129,7 @@ export function ParticipantProfileDisplay({ profile }: ParticipantProfileProps) 
           </div>
         </div>
         <div className="flex justify-center pt-4">
-          <QRCodeDisplay chestNumber={student.chest_no} participantName={student.name} />
+          <QRCodeDisplay identifier={student.badge_uid || student.chest_no} participantName={student.name} />
         </div>
       </motion.div>
 
