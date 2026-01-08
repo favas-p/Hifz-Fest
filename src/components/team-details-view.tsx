@@ -148,7 +148,7 @@ export function TeamDetailsView({
   function exportToCSV() {
     const headers = [
       "Student Name",
-      "Chest Number",
+      "UID Number", // Changed from Chest Number
       "Team",
       "Total Points",
       "Registered Programs",
@@ -162,7 +162,7 @@ export function TeamDetailsView({
       const programNames = studentRegs.map((reg) => reg.programName).join("; ");
       rows.push([
         student.name,
-        student.chestNumber,
+        student.badge_uid || "N/A", // Changed from student.chestNumber
         student.teamName,
         student.score.toString(),
         programNames || "None",
@@ -250,7 +250,7 @@ export function TeamDetailsView({
         const startX = 14;
 
         doc.setFont("helvetica", "bold");
-        const headers = ["Student Name", "Chest", "Team", "Points", "Programs"];
+        const headers = ["Student Name", "UID", "Team", "Points", "Programs"];
         let xPos = startX;
         headers.forEach((header, i) => {
           doc.text(header, xPos, yPos);
@@ -292,13 +292,13 @@ export function TeamDetailsView({
         </p>
       </div>
 
-      
+
 
       <div className="grid gap-4 md:grid-cols-3">
         {teamStats.map((stat) => {
           const teamStudents = students.filter((s) => s.teamId === stat.team.id);
           const teamRegs = registrations.filter((r) => r.teamId === stat.team.id);
-          
+
           return (
             <Card key={stat.team.id} className="border-white/10 bg-white/5 p-6">
               <div className="flex items-center justify-between mb-4">
@@ -357,35 +357,35 @@ export function TeamDetailsView({
         </h2>
 
         <div className="grid gap-4 md:grid-cols-4">
-        <div className="md:col-span-2 flex items-center rounded-2xl border border-white/10 bg-white/5 px-4">
-          <Search className="mr-2 h-4 w-4 text-white/50 shrink-0" />
-          <Input
-            type="text"
-            placeholder="Search students or programs..."
-            className="border-none bg-transparent px-0 placeholder:text-white/40"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+          <div className="md:col-span-2 flex items-center rounded-2xl border border-white/10 bg-white/5 px-4">
+            <Search className="mr-2 h-4 w-4 text-white/50 shrink-0" />
+            <Input
+              type="text"
+              placeholder="Search students or programs..."
+              className="border-none bg-transparent px-0 placeholder:text-white/40"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <SearchSelect
+            name="team_filter"
+            options={teamOptions}
+            value={selectedTeamId}
+            onValueChange={setSelectedTeamId}
+            placeholder="Filter by team"
           />
+          <div className="flex gap-2">
+            <Button onClick={exportToCSV} variant="secondary" className="gap-2 flex-1">
+              <FileSpreadsheet className="h-4 w-4" />
+              CSV
+            </Button>
+            <Button onClick={exportToPDF} variant="secondary" className="gap-2 flex-1">
+              <FileText className="h-4 w-4" />
+              PDF
+            </Button>
+          </div>
         </div>
-        <SearchSelect
-          name="team_filter"
-          options={teamOptions}
-          value={selectedTeamId}
-          onValueChange={setSelectedTeamId}
-          placeholder="Filter by team"
-        />
-        <div className="flex gap-2">
-          <Button onClick={exportToCSV} variant="secondary" className="gap-2 flex-1">
-            <FileSpreadsheet className="h-4 w-4" />
-            CSV
-          </Button>
-          <Button onClick={exportToPDF} variant="secondary" className="gap-2 flex-1">
-            <FileText className="h-4 w-4" />
-            PDF
-          </Button>
-        </div>
-      </div>
-      
+
         <Card className="border-white/10 bg-white/5 p-6">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -395,7 +395,7 @@ export function TeamDetailsView({
                     Student Name
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-white/90">
-                    Chest Number
+                    UID Number
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-white/90">
                     Team
@@ -429,7 +429,7 @@ export function TeamDetailsView({
                           <p className="font-medium text-white">{student.name}</p>
                         </td>
                         <td className="py-4 px-4">
-                          <Badge tone="cyan">{student.chestNumber}</Badge>
+                          <Badge tone="cyan">{student.badge_uid || "N/A"}</Badge>
                         </td>
                         <td className="py-4 px-4">
                           <p className="text-sm text-white/70">{student.teamName}</p>

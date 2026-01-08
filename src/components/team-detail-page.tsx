@@ -101,11 +101,11 @@ export function TeamDetailPage({
   }, [filteredStudents, studentRegistrationsMap]);
 
   function exportToCSV() {
-    const headers = ["Student Name", "Chest Number", "Assigned Programs"];
+    const headers = ["Student Name", "UID Number", "Assigned Programs"];
     const rows: string[][] = [];
 
     tableData.forEach(({ student, programNames }) => {
-      rows.push([student.name, student.chestNumber, programNames || "None"]);
+      rows.push([student.name, student.badge_uid || "N/A", programNames || "None"]);
     });
 
     const csvContent = [
@@ -155,7 +155,7 @@ export function TeamDetailPage({
         const startX = 14;
 
         doc.setFont("helvetica", "bold");
-        const headers = ["Student Name", "Chest #", "Assigned Programs"];
+        const headers = ["Student Name", "UID", "Assigned Programs"];
         let xPos = startX;
         headers.forEach((header, i) => {
           doc.text(header, xPos, yPos);
@@ -170,7 +170,7 @@ export function TeamDetailPage({
             yPos = 20;
           }
           xPos = startX;
-          const row = [student.name, student.chestNumber, programNames || "None"];
+          const row = [student.name, student.badge_uid || "N/A", programNames || "None"];
           row.forEach((cell, i) => {
             const cellText = doc.splitTextToSize(cell, colWidths[i] - 2);
             doc.text(cellText, xPos, yPos);
@@ -245,7 +245,7 @@ export function TeamDetailPage({
                   Student Name
                 </th>
                 <th className="text-left py-3 px-4 text-sm font-semibold text-white/90">
-                  Chest Number
+                  UID Number
                 </th>
                 <th className="text-left py-3 px-4 text-sm font-semibold text-white/90">
                   Assigned Programs
@@ -269,7 +269,7 @@ export function TeamDetailPage({
                       <p className="font-medium text-white">{student.name}</p>
                     </td>
                     <td className="py-4 px-4">
-                      <Badge tone="cyan">{student.chestNumber}</Badge>
+                      <Badge tone="cyan">{student.badge_uid || "N/A"}</Badge>
                     </td>
                     <td className="py-4 px-4">
                       {studentPrograms.length > 0 ? (

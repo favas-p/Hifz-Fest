@@ -156,10 +156,10 @@ export const StudentManager = React.memo(function StudentManager({
   const viewStudent = viewStudentId ? students.find((student) => student.id === viewStudentId) : null;
 
   const exportToCSV = () => {
-    const headers = ["Name", "Chest Number", "Team", "Category", "Total Points"];
+    const headers = ["Name", "UID Number", "Team", "Category", "Total Points"];
     const rows = sortedStudents.map((student) => [
       student.name,
-      student.chest_no,
+      student.badge_uid || "N/A",
       teamMap.get(student.team_id) ?? "Unknown",
       student.category || "",
       student.total_points.toString(),
@@ -206,7 +206,7 @@ export const StudentManager = React.memo(function StudentManager({
 
       yPos += 4;
 
-      const headers = ["Name", "Chest Number", "Team", "Category", "Total Points"];
+      const headers = ["Name", "UID Number", "Team", "Category", "Total Points"];
       const colWidths = [50, 30, 40, 30, 30];
       const startX = 14;
 
@@ -231,7 +231,7 @@ export const StudentManager = React.memo(function StudentManager({
         xPos = startX;
         const rowData = [
           student.name,
-          student.chest_no,
+          student.badge_uid || "N/A",
           teamMap.get(student.team_id) ?? "Unknown",
           student.category || "",
           student.total_points.toString(),
