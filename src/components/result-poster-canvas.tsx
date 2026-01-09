@@ -58,7 +58,7 @@ function getPosterTheme(style: PosterStyle) {
           { offset: 1, color: "#4c1d95" }, // Dark purple
         ],
         textColors: {
-          program: "#000000", // Dark purple
+          program: "#f05002", // Dark purple
           section: "#000000", // Purple
           name: "#000000", // Deep purple
           team: "#000000", // Violet
@@ -75,7 +75,7 @@ function getPosterTheme(style: PosterStyle) {
         ],
         textColors: {
           program: "#fffff", // Dark blue
-          section: "#e7a039", // Blue
+          section: "#f05002", // Blue
           name: "#ffffff", // Slate
           team: "#ffffff", // Darker blue
         },
@@ -90,10 +90,10 @@ function getPosterTheme(style: PosterStyle) {
           { offset: 1, color: "#047857" }, // Dark emerald
         ],
         textColors: {
-          program: "#bd6229", // Dark emerald
-          section: "#000000", // Emerald
-          name: "#000000", // Very dark emerald
-          team: "#000000", // Dark emerald
+          program: "#ffffff", // Dark emerald
+          section: "#ffffff", // Emerald
+          name: "#ffffff", // Very dark emerald
+          team: "#ffffff", // Dark emerald
         },
       };
     default:
